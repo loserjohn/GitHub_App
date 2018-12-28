@@ -13,7 +13,7 @@ export default class DataStore {
                     resolve (wrapData)
                 }else{
                     this.getDataNet(url).then(data=>{
-                        console.log('from net')
+                        // console.log(this._wrapData(data)) 
                         resolve (this._wrapData(data))
                     }).catch(err=>{reject(err)})
                 }
@@ -86,7 +86,7 @@ export default class DataStore {
     // 判断是否过期
       checkFn(time){
         let now = new Date().getTime();
-        if(now - time >= 345600000){
+        if(now - time >= 34){
             return false
         }
         return true

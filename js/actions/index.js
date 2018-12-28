@@ -1,7 +1,8 @@
 import { onThemeChange} from './theme'
-import { onFetchData} from './popular'
+import { onFetchData,onLoadMorePopular} from './popular'
 
 export default {
     onThemeChange,
-    onFetchData
+    onFetchData,
+    onLoadMorePopular
 }

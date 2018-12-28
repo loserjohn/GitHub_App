@@ -18,7 +18,7 @@ import { connect } from 'react-redux';
 import PopularItem from '../common/PopularItem'
 const tabs = ['java','php','node','js','C','C#','.Net']
 
-
+const pageSize = 10
 
 class Tab extends Component {
   constructor(props){
@@ -30,14 +30,39 @@ class Tab extends Component {
   componentWillMount(){
     this._loadData()
   }
-  _loadData(){
-    const {nav,popular,onFetchData,title } = this.props; 
-    // console.log('tab',title)
-    onFetchData(title) 
+  _loadData(loadmore){
+    const {onLoadMorePopular,onFetchData,storeName } = this.props; 
+   
+    const store = this._store()
+    console.log('tab',storeName)   
+    if(loadmore){ 
+      onLoadMorePopular(storeName,store.pageIndex+1,pageSize,store.items,(res)=>{
+          alert(res) 
+      })
+
+    }else{
+       onFetchData(storeName,pageSize)   
+    }
+   
   }
-  _moreData(){
-    console.log('加载更多')
+  _store(){
+    const {popular,storeName} = this.props 
+   
+    let store  = popular[storeName]  
+      
+    if(!store){
+      store = {
+        items:[],
+        isloading:false,
+        // pageIndex:1,
+        projectModes:[],  //要显示的数据
+        hideLoadingMore:true //默认隐藏加载更多 
+      } 
+    } 
+    // console.log(0,store) 
+    return store
   }
+
   _renderItem(data){
     const item  = data;
     return  <PopularItem 
@@ -47,40 +72,57 @@ class Tab extends Component {
         }}
     ></PopularItem>
   }
+  _getIndicator(){
+    return this._store().hideLoadingMore?null:
+    <View style={styles.nomore}>
+      <Text>没有数据</Text> 
+    </View>
+  }
   render(){
-    const {title,popular} = this.props
-    let store  = popular[title]  
-    if(!store){
-      store = {
-        items:[],
-        isloading:false
-      } 
-    } 
-    // const renderItem  = this._renderItem()
+    const {storeName,popular} = this.props
+    let store  = this._store()
+    // const renderItem  = this._renderItem() 
     return (   
       <View style={styles.container}>
          <FlatList
-           data={store.items}
+           data={store.projectModes}
            renderItem={({item}) =>{ 
              return(
               this._renderItem(item) 
              )
-           }}
-           ListEmptyComponent ={() => <Text>没有数据</Text>}
+           }} 
           //  keyExtractor = {}
            onEndReachedThreshold = {0.1} 
-           onEndReached = {()=>{this._moreData()}}  
+
            refreshControl = {
                 <RefreshControl
                 refreshing={store.isloading} 
-                onRefresh = {()=>{this._loadData()}} 
+                onRefresh = {()=>{this._loadData(false)}} 
                 colors = {["#3697ff"  ]}
                 // enabled = {true}
                 tintColor = "red"
-                title = '客官请稍后' 
+                storeName = '客官请稍后' 
             />
            }
            refreshing = {store.isloading}
+
+           ListFooterComponent = {()=>{
+             return (<View style={styles.nomore}>
+              <Text>没有数据</Text> 
+            </View>) 
+           }}
+           onEndReached={()=>{
+             setTimeout(()=>{
+              if(this.canLoadMore){
+                this._loadData(true);
+                this.canLoadMore = false
+               }
+             },100)
+                        
+           }}
+           onMomentumScrollBegin={()=>{
+             this.canLoadMore = true;
+           }} 
          ></FlatList> 
       </View> 
     )
@@ -93,7 +135,10 @@ const mapStateToProps = state =>({
 })
 const mapDipacthToProps = dispacth=>({
   onFetchData:(labelType)=>{
-    dispacth(actions.onFetchData(labelType))
+    dispacth(actions.onFetchData(labelType,pageSize))
+  } ,
+  onLoadMorePopular:(labelType,pageIndex,pageSize,dataArray,callback)=>{ 
+    dispacth(actions.onLoadMorePopular(labelType,pageIndex,pageSize,dataArray,callback))
   }  
 })
 
@@ -110,9 +155,9 @@ class PopularPage extends Component {
     const Tabs = {}
     tabs.forEach((item,index)=>{ 
         Tabs[item] = {
-          screen: props=>{return(<PopularTab {...props} title = {item}/>)},
+          screen: props=>{return(<PopularTab {...props} storeName = {item}/>)},
           navigationOptions:{
-              title:item,
+              storeName:item,
               header:null
           }
         }
@@ -171,4 +216,8 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  nomore:{
+    justifyContent: 'center',
+    flexDirection: 'row', 
+  }
 });
