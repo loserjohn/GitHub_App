@@ -1,4 +1,6 @@
 import {AsyncStorage} from 'react-native';
+// import GitHubTrending from 'GitHubTrending'
+export const FLAG_STORE  = {flag_popular:'popular',flag_trending:'trending'}
 
 export default class DataStore {
     // 入口方法 优先获取区本地数据

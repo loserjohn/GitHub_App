@@ -38,7 +38,8 @@ const popular = (state = initState, action) => {
                 items:action.items ,
                 projectModes:action.projectModes  ,
                 isloading:false,
-                pageIndex:1 
+                pageIndex:1,
+                hideLoadingMore:false,
             }
             
         };

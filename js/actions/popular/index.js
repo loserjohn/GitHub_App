@@ -55,7 +55,7 @@ export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],ca
                     projectModes:dataArray
                 })
             }else{
-                alert(1)
+
                 let max = pageIndex*pageSize>dataArray.length?dataArray.length:pageIndex*pageSize;
                 dispatch({
                     type:Types.POPULAR_LOADMORE_SUCCESS,
