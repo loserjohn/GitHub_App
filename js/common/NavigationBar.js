@@ -42,7 +42,7 @@ export default class NavigationBar extends Component{
         </View>:null
 
         let titleView = this.props.titleView?this.props.titleView:
-        <Text ellipsizeMode = 'head' numberOfLines={1} style={styles.title}>{this.props.title}</Text>
+        <Text ellipsizeMode = 'tail' numberOfLines={1} style={styles.title}>{this.props.title}</Text>
 
         let content = this.props.hide?null:
         <View style={styles.navBar}>
@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
         left:40,
         right:40,
         top:0,
-        bottom:0
+        bottom:0,
+        paddingRight:15,
+            paddingLeft:15
     },
     title:{
         fontSize:20,
