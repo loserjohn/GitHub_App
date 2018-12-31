@@ -41,6 +41,7 @@ const Main = createStackNavigator({
         screen: Detail,
         navigationOptions:{
             headerTitle:'详情',
+            header:null,
             headerTitleStyle:{
                 fontSize:16
             }

@@ -7,17 +7,54 @@
  */
    
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-
+import {Platform, StyleSheet, Text, View,TouchableOpacity} from 'react-native';
+import NavigationBar from '../common/NavigationBar'
 import { connect } from 'react-redux';
 
 class Detail extends Component {
+  constructor(props){
+    super(props);
+    console.log(this.props.navigation.state.params.itemData.fullName)       
+  }
+  renderTitleView() {
+    return <View>
+      <TouchableOpacity
+        onPress={() => { this.dialog.show() }}
+        underlayColor="transparent"
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{
+            fontSize: 18,
+            color: '#ffffff',
+            fontWeight: '400'
+          }}>趋势{this.state.timeSpan.showText}</Text>
+          <MaterialIcons
+            name={'arrow-drop-up'}
+            size={22}
+            style={{ color: 'white' }}
+          ></MaterialIcons>
+        </View>
+      </TouchableOpacity>
 
+    </View>
+
+  }
   
   render() {
-    console.log(this.props.store)
+
     return (
       <View style={styles.container}>
+        <NavigationBar
+          // title={'趋势'}
+          titleView={
+            this.renderTitleView()
+          }
+          statusBar={statusBar}
+          style={{
+            backgroundColor: THEME_COLOR
+          }}
+        />
+
         <Text style={styles.welcome}>Detail</Text>
       </View> 
     );

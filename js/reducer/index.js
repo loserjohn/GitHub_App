@@ -2,7 +2,7 @@
 import { combineReducers } from 'redux';
 import theme from './theme'
 import popular from './popular'
-
+import trending from './trending'
 
 import {rootCom, RootNavigator} from '../AppNavigators'
 // console.log('@@@@@@@@@@@')
@@ -25,6 +25,7 @@ const navReducer = (state = initState, action) => {
 const index = combineReducers({  
     nav:navReducer,
     popular:popular,
+    trending:trending,
     theme :theme,
     
 })

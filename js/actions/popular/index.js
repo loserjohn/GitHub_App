@@ -1,17 +1,19 @@
 import Types from "../types"
 import DataStore from '../../utils/DataStore'
+import {handleData} from '../ActionsUtil'
+
 
 // 下拉刷新
-export function onFetchData(storeName,pageSize){
+export function onFetchData(storeName,src,pageSize){
     // console.log('on',storeName) 
     const dataStore = new  DataStore()
     return (dispatch)=>{
         dispatch({type:Types.POPULAR_FRESH,storeName:storeName})  
-        let url = `https://api.github.com/search/repositories?q=${storeName}`
-        dataStore.fetchData(url).then(res=>{
+        // let url = src+storeName
+        dataStore.fetchData(src).then(res=>{
             
         //    dispatch(fetchData(res,storeName))
-                handleData(dispatch,storeName,res,pageSize)
+                handleData(Types.POPULAR_FRESH_SUCCESS,dispatch,storeName,res,pageSize)
         }).catch(error=>{
             dispatch({
                 type:Types.POPULAR_FRESH_ERROR,
@@ -76,16 +78,16 @@ export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],ca
 
 
 
-function handleData(dispatch,storeName,data,pageSize){ 
-   let fixItem = [];
-   if(data && data.data &&  data.data.items){
-    fixItem = data.data.items
-   }
-   dispatch({
-    type:Types.POPULAR_FRESH_SUCCESS,
-    storeName:storeName, 
-    items:fixItem,
-    pageIndex:1,
-    projectModes:pageSize>fixItem.length?fixItem:fixItem.slice(0,pageSize) 
-})
-} 
+// function handleData(dispatch,storeName,data,pageSize){ 
+//    let fixItem = [];
+//    if(data && data.data &&  data.data.items){
+//     fixItem = data.data.items
+//    }
+//    dispatch({
+//     type:Types.POPULAR_FRESH_SUCCESS,
+//     storeName:storeName, 
+//     items:fixItem,
+//     pageIndex:1,
+//     projectModes:pageSize>fixItem.length?fixItem:fixItem.slice(0,pageSize) 
+// })
+// } 

@@ -5,63 +5,314 @@
  * @format
  * @flow
  */
-   
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Button} from 'react-native';
-import NavigationUtil from '../utils/NavigationUtil'
-
-
+import Toast, { DURATION } from 'react-native-easy-toast'
+import React, { Component } from 'react';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View, FlatList, RefreshControl, DeviceEventEmitter } from 'react-native';
+import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
+// import DataStore from '../utils/DataStore'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import NavigationBar from '../common/NavigationBar'
+import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
 
-class TrendPage extends Component {
-  test(){
-    // alert(1);global.tintColor = "#ff0000"
+import TrendingItem from '../common/TrendingItem'
+import TrendingDialog, { timeSpans } from '../common/TrendingDialog'
+// console.log(timeSpans) 
+
+const tabs = ['all', 'C', 'C#', 'java', 'php', 'node', 'js', '.Net']
+
+const pageSize = 10
+const THEME_COLOR = "#3697ff"
+
+const URL = 'https://github.com/trending/'
+
+let  TrendType = '?since-deily'
+class Tab extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      datas: ''
+    }
+  }
+  componentDidMount(){
+    DeviceEventEmitter.addListener('trendingSwitch', (tab)=>{
+      this._loadData(false)
+    })
+  }
+
+  //在组件销毁的时候要将其移除
+  componentWillUnmount(){
+    DeviceEventEmitter.remove();
+  }
+  componentWillMount() {
+    this._loadData()
+  }
+  _loadData(loadmore) {
+    // alert(1)
+    const { onLoadMoreTrending, onRefreshTrending, storeName } = this.props;
+    const url = this._getUrl(storeName)
+    // console.log(-10,storeName,url, pageSize)
+    const store = this._store()
+    // console.log('tab', storeName)
+    if (loadmore) {
+      onLoadMoreTrending(storeName, store.pageIndex + 1, pageSize, store.items, (res) => {
+        this.refs.toast.show(res);
+      })
+
+    } else {
+      onRefreshTrending(storeName, url, pageSize)
+    }
+
+  }
+  _store() {
+    const { trending, storeName } = this.props
+
+    let store = trending[storeName]
+
+    if (!store) {
+      store = {
+        items: [],
+        isloading: false,
+        // pageIndex:1,
+        projectModes: [],  //要显示的数据
+        hideLoadingMore: true //默认隐藏加载更多 
+      }
+    }
+    // console.log(0,store) 
+    return store
+  }
+  _getUrl(key) {
+    return URL + key + this.props.trendType
+  }
+
+  _renderItem(data) {
+    const item = data;
+    return <TrendingItem
+      item={item}
+      onSelect={() => {
+        // alert(1)
+        
+        // const props = {...this.props,itemData:data}
+        // console.log(props) 
+        NavigationUtil.navigateTo(this.props,'Detail',{itemData:data})
+      }}
+    ></TrendingItem>
+  }
+  _getIndicator() {
+    // debugger 
+
+    return this._store().hideLoadingMore === true ? null :
+      <View style={styles.nomore}>
+        <ActivityIndicator size="smcall" color="#d3d3d3" />
+      </View>
+
   }
   render() {
+    let store = this._store()
+    // const renderItem  = this._renderItem() 
     return (
-      
       <View style={styles.container}>
-        {/* <Text style={styles.welcome}  onPress = {()=>{
-         this.props.onThemeChange('#096')
-             alert(1)
-        }}>Trend</Text>  */}
-        <Button onPress = {()=>{
-         this.props.onThemeChange('#096')
-            //  alert(1)
-        }} title="改变主题"></Button>
+        <FlatList
+          data={store.projectModes}
+          renderItem={({ item }) => {
+            return (
+              this._renderItem(item)
+            )
+          }}
+          keyExtractor={item => '' + (item.id || item.fullName)}
+          onEndReachedThreshold={0.1}
 
-        <Button onPress = {()=>{
-         NavigationUtil.navigateTo(this.props,'FetchDemo')
-            //  alert(1)
-        }} title="fetch"></Button>
-         <Button onPress = {()=>{
-         NavigationUtil.navigateTo(this.props,'AsyncStorageDemo')
-            //  alert(1)
-        }} title="AsyncStorage"></Button>
-        <Button onPress = {()=>{
-         NavigationUtil.navigateTo(this.props,'DataStoreDemo')
-            //  alert(1)
-        }} title="本地缓存测试"></Button>
-      </View> 
-    );
+          refreshControl={
+            <RefreshControl
+              refreshing={store.isloading}
+              onRefresh={() => { this._loadData(false) }}
+              colors={["#3697ff"]}
+              // enabled = {true}
+              tintColor="red"
+              storeName='客官请稍后'
+            />
+          }
+          refreshing={store.isloading}
+
+          // ListFooterComponent={() => { 
+          //   return this._getIndicator() 
+          // }}
+          onEndReached={() => {
+            setTimeout(() => {
+              if (this.canLoadMore) {
+                this._loadData(true);
+                this.canLoadMore = false
+              }
+            }, 100)
+
+          }}
+          onMomentumScrollBegin={() => {
+            this.canLoadMore = true;
+          }}
+        ></FlatList>
+        <Toast
+          ref="toast"
+          position='center'
+          opacity={0.8}
+        />
+      </View>
+    )
   }
 }
 
-const mapStateToProps = state =>({
-  
+const mapStateToProps = state => ({
+  nav: state.nav,
+  trending: state.trending
 })
-const mapDispatchToProps = dispatch =>({
-  onThemeChange:theme=>dispatch(actions.onThemeChange(theme))
+const mapDipacthToProps = dispacth => ({
+  onRefreshTrending: (labelType, url, pageSize) => {
+    dispacth(actions.onRefreshTrending(labelType, url, pageSize))
+  },
+  onLoadMoreTrending: (labelType, pageIndex, pageSize, dataArray, callback) => {
+    dispacth(actions.onLoadMoreTrending(labelType, pageIndex, pageSize, dataArray, callback))
+  }
 })
 
-export default connect(mapStateToProps,mapDispatchToProps)(TrendPage)
+const TrendingTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
+
+
+
+
+
+class TrendingPage extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      timeSpan: timeSpans[0]
+    }
+  }
+
+  
+
+  initTab() {
+    // console.log('Home',this.props.nav)
+    const Tabs = {}
+    tabs.forEach((item, index) => {
+      Tabs[item] = {
+        screen: props => {
+          return (
+            // <View style={{height:40,overflow:'hidden'}}>
+            <TrendingTab {...props} storeName={item} trendType = {this.state.timeSpan}/>
+            // </View>
+
+
+          )
+        },
+        navigationOptions: {
+          storeName: item,
+          header: null
+        }
+      }
+    })
+    return Tabs
+  }
+  renderTitleView() {
+    return <View>
+      <TouchableOpacity
+        onPress={() => { this.dialog.show() }}
+        underlayColor="transparent"
+      >
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{
+            fontSize: 18,
+            color: '#ffffff',
+            fontWeight: '400'
+          }}>趋势{this.state.timeSpan.showText}</Text>
+          <MaterialIcons
+            name={'arrow-drop-up'}
+            size={22}
+            style={{ color: 'white' }}
+          ></MaterialIcons>
+        </View>
+      </TouchableOpacity>
+
+    </View>
+
+  }
+  onSelectTimeSpan(tab) {
+    this.dialog.dismiss()
+
+    this.setState({
+      timeSpan: tab
+    })
+    DeviceEventEmitter.emit('trendingSwitch', tab);
+  }
+  renderDialogView() {
+    return <TrendingDialog
+      ref={dialog => this.dialog = dialog}
+      onSelect={tab => {
+        // alert(tab)
+        this.onSelectTimeSpan(tab)
+      }}
+    ></TrendingDialog>
+  }
+  render() {
+    let statusBar = {
+      backgroundColor: THEME_COLOR,
+      barStyle: 'light-content'
+    }
+    let navigationBar = <NavigationBar
+      // title={'趋势'}
+      titleView={
+        this.renderTitleView()
+      }
+      statusBar={statusBar}
+      style={{
+        backgroundColor: THEME_COLOR
+      }}
+    />
+    const Tabs = this.initTab()
+    let TabNav;
+    if (!this.tabNav) {
+      this.tabNav = createMaterialTopTabNavigator(Tabs, {
+        swipeEnabled: true,
+        tabBarOptions: {
+          labelStyle: {
+            fontSize: 12,
+          },
+          tabStyle: {
+            // width: 100,
+          },
+          style: {
+            backgroundColor: '#3697ff',
+            height: 40,
+            overflow: 'hidden'
+          },
+          indicatorStyle: {
+            backgroundColor: '#b9d1ff'
+          },
+          scrollEnabled: true
+        },
+        lazy: true
+      })
+
+    }
+    TabNav = this.tabNav
+    return (
+      <View style={{ flex: 1 }}>
+        {navigationBar}
+        <TabNav />
+        {this.renderDialogView()}
+      </View>
+    )
+  }
+}
+
+
+export default connect()(TrendingPage)
+
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // flex: 1,
+    // justifyContent: 'center',
+    // alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
@@ -74,4 +325,9 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  nomore: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    lineHeight: 40
+  }
 });

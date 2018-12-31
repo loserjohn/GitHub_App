@@ -7,18 +7,24 @@
  */
 import Toast, { DURATION } from 'react-native-easy-toast'
 import React, { Component } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl,DeviceInfo } from 'react-native';
 import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
 import DataStore from '../utils/DataStore'
 
+import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
 
 import PopularItem from '../common/PopularItem'
-const tabs = ['java', 'php', 'node', 'js', 'C', 'C#', '.Net']
+
+const URL = 'https://api.github.com/search/repositories?q='
+const tabs = ['php', 'java', 'node', 'js', 'C', 'C#', '.Net']
 
 const pageSize = 10
+const THEME_COLOR = "#3697ff" 
+
+
 
 class Tab extends Component {
   constructor(props) {
@@ -32,7 +38,7 @@ class Tab extends Component {
   }
   _loadData(loadmore) {
     const { onLoadMorePopular, onFetchData, storeName } = this.props;
-
+    const url = this._getUrl(storeName)
     const store = this._store()
     // console.log('tab', storeName)
     if (loadmore) {
@@ -41,9 +47,12 @@ class Tab extends Component {
       })
 
     } else {
-      onFetchData(storeName, pageSize)
+      onFetchData(storeName,url, pageSize)
     }
 
+  }
+  _getUrl(key){
+    return URL + key  +'&sort=stars'
   }
   _store() {
     const { popular, storeName } = this.props
@@ -71,7 +80,8 @@ class Tab extends Component {
 
       }}
     ></PopularItem>
-  }
+    
+    }
   _getIndicator() {
     // debugger 
 
@@ -108,9 +118,9 @@ class Tab extends Component {
           }
           refreshing={store.isloading}
 
-          ListFooterComponent={() => {
-            return this._getIndicator() 
-          }}
+          // ListFooterComponent={() => { 
+          //   return this._getIndicator() 
+          // }}
           onEndReached={() => {
             setTimeout(() => {
               if (this.canLoadMore) {
@@ -139,9 +149,10 @@ const mapStateToProps = state => ({
   popular: state.popular
 })
 const mapDipacthToProps = dispacth => ({
-  onFetchData: (labelType) => {
-    dispacth(actions.onFetchData(labelType, pageSize))
-  },
+  onFetchData: (labelType,url,pageSize) => {
+    // console.log(labelType,url,pageSize)
+    dispacth(actions.onFetchData(labelType, url,pageSize))
+  }, 
   onLoadMorePopular: (labelType, pageIndex, pageSize, dataArray, callback) => {
     dispacth(actions.onLoadMorePopular(labelType, pageIndex, pageSize, dataArray, callback))
   }
@@ -161,10 +172,10 @@ class PopularPage extends Component {
     tabs.forEach((item, index) => {
       Tabs[item] = {
         screen: props => { return (
-          <View style={{height:40,overflow:'hidden'}}>
-             <PopularTab {...props} storeName={item} />
-          </View>
-
+          // <View style={{height:40,overflow:'hidden'}}>
+          <PopularTab {...props} storeName={item} />
+          // </View>
+            
          
           ) },
         navigationOptions: {
@@ -176,12 +187,19 @@ class PopularPage extends Component {
     return Tabs
   }
   render() {
-    // const {routes,index} = this.props.navigation.state;   
-    // console.log('第二层路由',this.props.navigation)
-
+    let statusBar = {
+      backgroundColor:THEME_COLOR,
+      barStyle:'light-content'
+    }
+    let navigationBar = <NavigationBar 
+      title={'最热'}
+      statusBar = {statusBar}
+      style={{
+        backgroundColor:THEME_COLOR
+      }}
+    />
     const Tabs = this.initTab()
     const TabNav = createMaterialTopTabNavigator(Tabs, {
-
       swipeEnabled: true,
       tabBarOptions: {
         labelStyle: {
@@ -191,7 +209,9 @@ class PopularPage extends Component {
           // width: 100,
         },
         style: {
-          backgroundColor: '#1d85d0',
+          backgroundColor: '#3697ff',
+          height:40,
+          overflow:'hidden'
         },
         indicatorStyle: {
           backgroundColor: '#b9d1ff'
@@ -201,7 +221,10 @@ class PopularPage extends Component {
       lazy: true
     })
     return (
-      <TabNav />
+      <View style={{flex:1,marginTop:DeviceInfo.isIPhoneX_deprecated?30:0}}>
+      {navigationBar}
+        <TabNav />
+      </View>
     )
   }
 }

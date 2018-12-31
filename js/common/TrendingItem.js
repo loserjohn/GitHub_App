@@ -9,61 +9,48 @@
 import React, { Component } from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import HTMLView from 'react-native-htmlview'
 
-
-class PopularItem extends Component {
+class TrendingItem extends Component {
 
     render() {
         const { item } = this.props
         // console.log(item)
-        if (!item || !item.owner) return null;
+        if (!item || !item.meta) return null;
 
         const favoriButton = <TouchableOpacity
-            style={{padding:6}}
+            style={{padding:6}} 
             onPress={()=>{}}
             underlayColor={'transparent'}
         > 
          <FontAwesome name="star-o" size={26} style={{color:"red"}}></FontAwesome>
         </TouchableOpacity> 
-
-        let description = '<p>'+ item.description+'</p>'
         return (
             <TouchableOpacity
                 onPress={() => { this.props.onSelect() }}
             >
                 <View style={styles.cell_container}>
                     <Text  style={styles.title}>
-                        {item.full_name}
+                        {item.fullName}
                     </Text>
                     <Text style={styles.description}> 
-                        {item.meta}
-                    </Text>
-                    <HTMLView
-                        value={description}
-                        onLinkPress={(url)=>{
-
-                        }}
-                        stylesheet={{
-                            p:styles.description,
-                            a:styles.description,
-                        }}
-                    ></HTMLView>  
-                    {/* <Text style={styles.description}> 
                         {item.description}
-                    </Text> */}
+                    </Text>
                     <View style={styles.row}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between',alignItems:'center' }}>
-                            <Text> Author:</Text>
-                            <Image style={{ height: 22, width: 22 }}
-                                source={{ uri: item.owner.avatar_url }}
+                            <Text> Contributor:</Text>
+
+                            {item.contributors.map((result,i,arr)=>{
+                                return <Image style={{ height: 22, width: 22,margin:2 }}
+                                key={i}
+                                source={{ uri: arr[i] }}
                             ></Image>
+                            })}
+                            
                         </View>
-                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between',alignItems:'center' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between',alignItems:'center'}}>
                             <Text> Start:</Text>
-                            <Text> {item.stargazers_count}</Text>
-                           
-                        </View> */} 
+                            <Text > {item.starCount}</Text>                      
+                        </View>
                         {favoriButton} 
                     </View>
 
@@ -73,7 +60,7 @@ class PopularItem extends Component {
         );
     }
 }
-export default PopularItem
+export default TrendingItem
 
 
 const styles = StyleSheet.create({
