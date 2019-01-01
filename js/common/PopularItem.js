@@ -10,22 +10,24 @@ import React, { Component } from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HTMLView from 'react-native-htmlview'
+import BaseItem  from '../common/BaseItem'
 
-
-class PopularItem extends Component {
+class PopularItem extends BaseItem {
 
     render() {
-        const { item } = this.props
+        const {projectModel } = this.props
         // console.log(item)
+        const item =  projectModel;
+        // const {item} =  projectModel;
         if (!item || !item.owner) return null;
 
-        const favoriButton = <TouchableOpacity
-            style={{padding:6}}
-            onPress={()=>{}}
-            underlayColor={'transparent'}
-        > 
-         <FontAwesome name="star-o" size={26} style={{color:"red"}}></FontAwesome>
-        </TouchableOpacity> 
+        // const favoriButton = <TouchableOpacity
+        //     style={{padding:6}}
+        //     onPress={()=>{}}
+        //     underlayColor={'transparent'}
+        // > 
+        //  <FontAwesome name="star-o" size={26} style={{color:"red"}}></FontAwesome>
+        // </TouchableOpacity> 
 
         let description = '<p>'+ item.description+'</p>'
         return (
@@ -64,7 +66,7 @@ class PopularItem extends Component {
                             <Text> {item.stargazers_count}</Text>
                            
                         </View> */} 
-                        {favoriButton} 
+                        {this._favoriteicon()} 
                     </View>
 
                 </View>

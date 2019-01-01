@@ -10,20 +10,24 @@ import React, { Component } from 'react';
 import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import HTMLView from 'react-native-htmlview'
-class TrendingItem extends Component {
+import BaseItem  from '../common/BaseItem'
+
+class TrendingItem extends BaseItem {
 
     render() {
-        const { item } = this.props
+        const {projectModel } = this.props
+        // console.log(item)
+        const {item} =  projectModel;
         // console.log(item)
         if (!item || !item.meta) return null;
 
-        const favoriButton = <TouchableOpacity
-            style={{ padding: 6 }}
-            onPress={() => { }}
-            underlayColor={'transparent'}
-        >
-            <FontAwesome name="star-o" size={26} style={{ color: "red" }}></FontAwesome>
-        </TouchableOpacity>
+        // const favoriButton = <TouchableOpacity
+        //     style={{ padding: 6 }}
+        //     onPress={() => { }}
+        //     underlayColor={'transparent'}
+        // >
+        //     <FontAwesome name="star-o" size={26} style={{ color: "red" }}></FontAwesome>
+        // </TouchableOpacity>
 
         let description = '<p>' + item.description + '</p>'
         return (
@@ -63,7 +67,7 @@ class TrendingItem extends Component {
                             <Text> Start:</Text>
                             <Text > {item.starCount}</Text>
                         </View>
-                        {favoriButton}
+                        {this._favoriteicon()} 
                     </View>
 
                 </View>

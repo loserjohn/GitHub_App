@@ -1,11 +1,11 @@
 class NavigationUtil {
     // 跳转某个页面
-    static navigateTo(params,page,data){
+    static navigateTo(params,page){
        
         
-        if(!params.navigation)return;
-        // console.log(global.Navigator,page);
-        global.Navigator.navigation.navigate(page,data&&{...data})
+            // if(!params.navigation)return;
+            // console.log(global.Navigator,page);
+        global.Navigator.navigation.navigate(page,{...params})
     }
 
     // 返回首页

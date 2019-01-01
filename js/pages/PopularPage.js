@@ -77,8 +77,14 @@ class Tab extends Component {
     return <PopularItem
       item={item}
       onSelect={() => {
-
+        // alert(1)
+        
+        // const props = {...this.props,itemData:data}
+        // console.log(props) 
+        NavigationUtil.navigateTo({projectModel:data},'Detail',) 
       }}
+      projectModel={data}
+      onFavorite={()=>{}}
     ></PopularItem>
     
     }

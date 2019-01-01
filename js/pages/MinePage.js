@@ -14,9 +14,20 @@ import { connect } from 'react-redux';
 import NavigationBar from '../common/NavigationBar'
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Test from '../common/Test' 
+
+import NavigationUtil from '../utils/NavigationUtil'
 
 const THEME_COLOR = "#3697ff" 
 class MinePage extends Component {
+  constructor(props){
+    
+    super(props)
+
+    this.state={
+      test:'我是初始值'
+    }
+  }
   getRightButton(){
     return(
         <View style={{flexDirection:'row'}}>
@@ -94,6 +105,13 @@ getLeftButton(callback){
          this.props.onThemeChange('#fd16a1')
             //  alert(1)
         }} title="红色"></Button>
+
+        <Button onPress = {()=>{
+          this.setState({
+            test:'我变了'
+          })
+        }} title="测试render"></Button>
+        <Test text={this.state.test}></Test>
       </View> 
     );
   }

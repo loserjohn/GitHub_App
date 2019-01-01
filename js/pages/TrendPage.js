@@ -95,8 +95,10 @@ class Tab extends Component {
         
         // const props = {...this.props,itemData:data}
         // console.log(props) 
-        NavigationUtil.navigateTo(this.props,'Detail',{itemData:data})
+        NavigationUtil.navigateTo({projectModel:data},'Detail',)
       }}
+      projectModel={item}
+      onFavorite={()=>{}}
     ></TrendingItem>
   }
   _getIndicator() {
