@@ -13,21 +13,19 @@ import HTMLView from 'react-native-htmlview'
 import BaseItem  from '../common/BaseItem'
 
 class PopularItem extends BaseItem {
-
+    constructor(props){
+        super(props)
+        this.state = {
+            isFavorite: this.props.projectModel.isFavorite 
+        } 
+    }
     render() {
         const {projectModel } = this.props
         // console.log(item)
-        const item =  projectModel;
+        const item =  projectModel.item;
         // const {item} =  projectModel;
         if (!item || !item.owner) return null;
 
-        // const favoriButton = <TouchableOpacity
-        //     style={{padding:6}}
-        //     onPress={()=>{}}
-        //     underlayColor={'transparent'}
-        // > 
-        //  <FontAwesome name="star-o" size={26} style={{color:"red"}}></FontAwesome>
-        // </TouchableOpacity> 
 
         let description = '<p>'+ item.description+'</p>'
         return (

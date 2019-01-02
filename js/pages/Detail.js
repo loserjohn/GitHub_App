@@ -67,8 +67,7 @@ class Detail extends Component {
        </FontAwesome>
       </TouchableOpacity>
       {
-          ViewUtil.getShareButton(()=>{
-            
+          ViewUtil.getShareButton(()=>{          
           })
         }
      

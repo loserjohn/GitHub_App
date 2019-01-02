@@ -18,12 +18,10 @@ export default  class BaseItem extends Component {
         onselect:PropsTypes.func,
         onFavorite:PropsTypes.func,
     }
-    constructor(props){
-        super(props)
-        this.state = {
-            isFavorite: this.props.projectModel.isFavorite
-        }
-    }
+    // constructor(props){
+    //     super(props)
+        
+    // }
     // 新版本的生命周期
     static getDerivedStateFromProps(nextProps,prevState){
         const isFavorite = nextProps.projectModel.isFavorite;
@@ -35,16 +33,19 @@ export default  class BaseItem extends Component {
         return null
     }
     // 改变状态
-    setFavoriteState(){
-        this.props.projectModel.isFavorite = isFavorite;
-        this.setState({
+    setFavoriteState(isFavorite){
+        this.props.projectModel.isFavorite = isFavorite;  
+        this.setState({ 
             isFavorite:isFavorite
-        })
+        }) 
+        // alert(isFavorite)
     }
 
     // 图标的点击事件
     onPressFavorite(){
+
         this.setFavoriteState(!this.state.isFavorite)
+        console.log(this.props.projectModel) 
         this.props.onFavorite(this.props.projectModel.item,!this.state.isFavorite) //回调到父组件
     }
     // 生成收藏按钮图标
@@ -59,6 +60,7 @@ export default  class BaseItem extends Component {
                 size={20}
                 style ={{color:'#678'}}
             ></FontAwesome>
+            <Text>{ JSON.stringify(this.state.isFavorite)  }</Text>
         </TouchableOpacity>
 
     }

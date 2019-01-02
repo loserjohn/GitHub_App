@@ -31,16 +31,17 @@ const popular = (state = initState, action) => {
     
         case Types.POPULAR_FRESH_SUCCESS:
         //    下拉刷新成功
+        // console.log(action.projectModels) 
         return {
             ...state, 
             [action.storeName]:{
                 ...state[action.storeName],
                 items:action.items ,
-                projectModes:action.projectModes  ,
+                projectModels:action.projectModels  , 
                 isloading:false,
                 pageIndex:1,
                 hideLoadingMore:false,
-            }
+            } 
             
         };
     
@@ -62,7 +63,7 @@ const popular = (state = initState, action) => {
             ...state, 
             [action.storeName]:{
                 ...state[action.storeName],
-                projectModes:action.projectModes,
+                projectModels:action.projectModels,
                 hideLoadingMore:false,
                 pageIndex:action.pageIndex
             } 

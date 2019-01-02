@@ -22,7 +22,7 @@ export default class FavoriteDao {
      * @memberof FavoriteDao
      */
     // 更新收藏的key的集合
-    updatedFavoriteKeys(key isAdd, ) {
+    updatedFavoriteKeys(key, isAdd ) {
         AsyncStorage.getItem(this.favoriteKey, (error, result) => {
             if (!error) {
                 let favoriteKeys = [];
@@ -58,7 +58,7 @@ export default class FavoriteDao {
                 }
             })
         })
-    }
+    } 
 
 
 
@@ -73,6 +73,7 @@ export default class FavoriteDao {
      */
     // 存储收藏条目
     saveFavoriteItem(key, value, callback) {
+        // debugger  
         AsyncStorage.setItem(key, value, (error, result) => {
             if (!error) {
                 this.updatedFavoriteKeys(key, true)
@@ -111,9 +112,9 @@ export default class FavoriteDao {
                     resolve(items);    
                 }
 
-            }).catch(e){
+            }).catch((e)=>{
                 reject(e)
-            }
+            })
 
         })
 

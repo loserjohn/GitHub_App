@@ -17,13 +17,18 @@ import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
 
 import PopularItem from '../common/PopularItem'
+import FavoriteDao from '../utils/FavoriteDao'
+import {FLAG_STORE} from '../utils/DataStore'
+import FavoriteUtils from '../utils/FavoriteUtils'
+
 
 const URL = 'https://api.github.com/search/repositories?q='
 const tabs = ['php', 'java', 'node', 'js', 'C', 'C#', '.Net']
+const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
 
 const pageSize = 10
 const THEME_COLOR = "#3697ff" 
-
+const flag = FLAG_STORE.flag_popular
 
 
 class Tab extends Component {
@@ -44,10 +49,10 @@ class Tab extends Component {
     if (loadmore) {
       onLoadMorePopular(storeName, store.pageIndex + 1, pageSize, store.items, (res) => {
         this.refs.toast.show(res);
-      })
+      },favoriteDao)
 
     } else {
-      onFetchData(storeName,url, pageSize)
+      onFetchData(storeName,url, pageSize,favoriteDao,flag)
     }
 
   }
@@ -56,7 +61,7 @@ class Tab extends Component {
   }
   _store() {
     const { popular, storeName } = this.props
-
+    // debugger  
     let store = popular[storeName]
 
     if (!store) {
@@ -64,27 +69,27 @@ class Tab extends Component {
         items: [],
         isloading: false,
         // pageIndex:1,
-        projectModes: [],  //要显示的数据
+        projectModels: [],  //要显示的数据
         hideLoadingMore: true //默认隐藏加载更多 
       }
     }
     // console.log(0,store) 
-    return store
+    return store 
   }
 
   _renderItem(data) {
-    const item = data;
+    const item = data; 
     return <PopularItem
-      item={item}
+      projectModel={item}
       onSelect={() => {
-        // alert(1)
-        
-        // const props = {...this.props,itemData:data}
-        // console.log(props) 
         NavigationUtil.navigateTo({projectModel:data},'Detail',) 
       }}
-      projectModel={data}
-      onFavorite={()=>{}}
+      // projectModel={data}
+      onFavorite={(item,isFavorite)=>{
+        // debugger 
+        console.log(item,isFavorite,flag)
+        FavoriteUtils.onFavorite(favoriteDao,item,isFavorite,flag)
+      }}
     ></PopularItem>
     
     }
@@ -103,7 +108,7 @@ class Tab extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={store.projectModes}
+          data={store.projectModels}
           renderItem={({ item }) => {
             return (
               this._renderItem(item)
@@ -157,10 +162,10 @@ const mapStateToProps = state => ({
 const mapDipacthToProps = dispacth => ({
   onFetchData: (labelType,url,pageSize) => {
     // console.log(labelType,url,pageSize)
-    dispacth(actions.onFetchData(labelType, url,pageSize))
+    dispacth(actions.onFetchData(labelType, url,pageSize,favoriteDao))
   }, 
-  onLoadMorePopular: (labelType, pageIndex, pageSize, dataArray, callback) => {
-    dispacth(actions.onLoadMorePopular(labelType, pageIndex, pageSize, dataArray, callback))
+  onLoadMorePopular: (labelType, pageIndex, pageSize, dataArray, callback,favoriteDao) => {
+    dispacth(actions.onLoadMorePopular(labelType, pageIndex, pageSize, dataArray, callback,favoriteDao))
   }
 })
 
@@ -170,7 +175,7 @@ const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
 
 
 
-class PopularPage extends Component {
+class PopularPage extends Component { 
 
   initTab() {
     // console.log('Home',this.props.nav)
