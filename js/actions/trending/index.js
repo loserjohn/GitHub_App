@@ -7,7 +7,7 @@ export const FLAG_STORE = {
 import {handleData} from '../ActionsUtil'
 
 // 下拉刷新
-export function onRefreshTrending(storeName,src, pageSize) {
+export function onRefreshTrending(storeName,src, pageSize,favoriteDao) {
     // console.log('on',storeName,src, pageSize) 
     const dataStore = new DataStore()
     return (dispatch) => {
@@ -21,7 +21,7 @@ export function onRefreshTrending(storeName,src, pageSize) {
         dataStore.fetchData(src,FLAG_STORE.flag_trending)
             .then(res => {
                 // console.log(res)
-                handleData(Types.TRENDING_FRESH_SUCCESS,dispatch, storeName, res, pageSize)
+                handleData(Types.TRENDING_FRESH_SUCCESS,dispatch, storeName, res, pageSize,favoriteDao)
             }).catch(error => {
                 dispatch({
                     type: Types.TRENDING_FRESH_ERROR,
@@ -67,13 +67,24 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
             } else {
 
                 let max = pageIndex * pageSize > dataArray.length ? dataArray.length : pageIndex * pageSize;
-                dispatch({
-                    type: Types.TRENDING_LOADMORE_SUCCESS,
-                    items: dataArray,
-                    storeName: storeName,
-                    pageIndex: pageIndex,
-                    projectModes: dataArray.slice(0, max)
+                _projectModules(dataArray.slice(0,max) ,favoriteDao,projectModels=>{
+                    debugger
+                    dispatch({
+                        type:Types.POPULAR_LOADMORE_SUCCESS,
+                        items:dataArray ,
+                        storeName:storeName,
+                        pageIndex:pageIndex,   
+                        projectModels:projectModels 
+                    })
                 })
+
+                // dispatch({
+                //     type: Types.TRENDING_LOADMORE_SUCCESS,
+                //     items: dataArray,
+                //     storeName: storeName,
+                //     pageIndex: pageIndex,
+                //     projectModes: dataArray.slice(0, max)
+                // })
             }
 
         }, 500)
@@ -82,20 +93,3 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
 
     }
 }
-
-
-
-
-// function handleData(dispatch, storeName, data, pageSize) {
-//     let fixItem = [];
-//     if (data && data.data && data.data.items) {
-//         fixItem = data.data.items
-//     }
-//     dispatch({
-//         type: Types.POPULAR_FRESH_SUCCESS,
-//         storeName: storeName,
-//         items: fixItem,
-//         pageIndex: 1,
-//         projectModes: pageSize > fixItem.length ? fixItem : fixItem.slice(0, pageSize)
-//     })
-// }

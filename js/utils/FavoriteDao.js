@@ -24,6 +24,7 @@ export default class FavoriteDao {
     // 更新收藏的key的集合
     updatedFavoriteKeys(key, isAdd ) {
         AsyncStorage.getItem(this.favoriteKey, (error, result) => {
+            alert(this.favoriteKey)
             if (!error) {
                 let favoriteKeys = [];
                 if (result) {
@@ -44,15 +45,16 @@ export default class FavoriteDao {
 
     // 获取所有收藏的key的集合
     getFavoriteKeys() {
+        // alert(this.favoriteKey)
         return new Promise((resolve, reject) => {
             AsyncStorage.getItem(this.favoriteKey, (error, result) => {
+                // alert(this.favoriteKey)  
                 if (!error) {
                     try {
                         resolve(JSON.parse(result))
                     } catch (e) {
                         reject(error)
                     }
-
                 } else {
                     reject(error)
                 }
@@ -93,16 +95,19 @@ export default class FavoriteDao {
     // 获取素有的收藏条目
     getAllItems() {
         return new Promise((resolve,reject)=>{
+            
             this.getFavoriteKeys().then(keys=>{
                 let items = [];
                 if(keys){
                     AsyncStorage.multiGet(keys,(err,stores)=>{
+                        // console.log(keys) 
                         try{
                             stores.map((result,i,store)=>{
                                 let key = store[i][0];
                                 let value = store[i][1];
-                                if(value) item.push(JSON.parse(value));
+                                if(value) items.push(JSON.parse(value));
                             })
+                           
                             resolve(items);
                         }catch(e){
                             reject(e)

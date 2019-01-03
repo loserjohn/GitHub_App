@@ -7,14 +7,17 @@
  */
 
 import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View, TouchableOpacity,WebView  } from 'react-native';
+import { Platform, StyleSheet, Text, View, TouchableOpacity, WebView } from 'react-native';
 import NavigationBar from '../common/NavigationBar'
 import { connect } from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import ViewUtil from '../utils/ViewUtil'
-import NavigationUtil  from '../utils/NavigationUtil'
+import NavigationUtil from '../utils/NavigationUtil'
 import BackPressComponent from '../common/BackPressComponent'
+import { FLAG_STORE } from '../utils/DataStore'
+import FavoriteUtils from '../utils/FavoriteUtils'
+// const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
 
 const baseURL = "https://github.com/"
 
@@ -22,18 +25,23 @@ const THEME_COLOR = "#3697ff"
 class Detail extends Component {
   constructor(props) {
     super(props);
-    // console.log(this.props.navigation.state.params.itemData.fullName)
     this.params = this.props.navigation.state.params;
-    const {projectModel} = this.params;
+    // debugger
+    const projectModel = this.params.projectModel.item;
+    this.projectModel = this.params.projectModel.item;
     this.url = projectModel.html_url || baseURL + projectModel.fullName
     const tittle = projectModel.full_name || projectModel.fullName
-    this.state={
+    this.favoriteDao = this.params.favoriteDao
+    this.flag = this.params.flag
+    this.callback = this.params.callback
+    this.state = {
       title: tittle,
-      url:  this.url ,
-      canGoBack:false
+      url: this.url,
+      canGoBack: false,
+      isFavorite: this.params.projectModel.isFavorite
     }
     // this.backPressComponent = new BackPressComponent({backPress:()=>{this.onBackPress()}})
-    this.backPressComponent = new BackPressComponent({backPress:this.onBackPress})
+    this.backPressComponent = new BackPressComponent({ backPress: this.onBackPress })
   }
   componentDidMount() {
     this.backPressComponent.componentDidMount()
@@ -42,58 +50,65 @@ class Detail extends Component {
   componentWillUnmount() {
     this.backPressComponent.componentWillUnmount()
   }
-  onBackPress= ()=> { 
-    
+  onBackPress = () => {
+
     this.back()
-    return true 
+    return true
   };
-  // onBackPress () { 
-    
-  //   this.back() 
-  //   return true
-  // }; 
+  doFavorite(isFavorite) {
+    // this.props.projectModel.isFavorite = isFavorite;   
+    this.setState({
+      isFavorite: isFavorite
+    })
+    this.callback(isFavorite)
+    FavoriteUtils.onFavorite(this.favoriteDao, this.projectModel, isFavorite, this.flag)
+  }
+
   renderRightButton() {
     return <View style={{ flexDirection: 'row' }}>
       <TouchableOpacity
-        onPress={() => {  }}
-        underlayColor="transparent" 
+        onPress={() => {
+          this.doFavorite(!this.state.isFavorite)
+        }}
+        underlayColor="transparent"
       >
-       <FontAwesome
-        name={'star-o'}
-        size={20}
-        style={{color:'white',marginRight:10}}
-       >
+        <FontAwesome
+          // name={'star-o'}
+          name={this.state.isFavorite ? 'star' : 'star-o'}
+          size={20}
+          style={{ color: 'white', marginRight: 10 }}
+        >
 
-       </FontAwesome>
+        </FontAwesome>
       </TouchableOpacity>
       {
-          ViewUtil.getShareButton(()=>{          
-          })
-        }
-     
-    </View> 
+        ViewUtil.getShareButton(() => {
+        })
+      }
+
+    </View>
   }
-  onNavigationStateChange(navState ){
+  onNavigationStateChange(navState) {
     //  console.log(navState) 
-      let canBack = navState.canGoBack
-      this.setState({
-        canGoBack: navState.canGoBack,
-        url:navState.url
-      })
+    let canBack = navState.canGoBack
+    this.setState({
+      canGoBack: navState.canGoBack,
+      url: navState.url
+    })
   }
-  back(){
+  back() {
     console.log('detail里面的回调')
-    if(this.state.canGoBack){
+    if (this.state.canGoBack) {
       this.webView.goBack()
-    }else{
+    } else {
       NavigationUtil.backTo(this.props.navigation)
     }
   }
-     
-  render() { 
+
+  render() {
     let statusBar = {
-      backgroundColor:THEME_COLOR,
-      barStyle:'light-content'
+      backgroundColor: THEME_COLOR,
+      barStyle: 'light-content'
     }
     // console.log(this.state.source)
     return (
@@ -101,7 +116,7 @@ class Detail extends Component {
         <NavigationBar
           // title={'趋势'}
           title={this.state.title}
-          leftButton = {ViewUtil.getLeftBackButton(()=>{this.back()})} 
+          leftButton={ViewUtil.getLeftBackButton(() => { this.back() })}
           rightButton={this.renderRightButton()}
           statusBar={statusBar}
           style={{
@@ -109,14 +124,14 @@ class Detail extends Component {
           }}
         />
 
-      <WebView 
-        style={styles.container}
-        ref={webView=>this.webView = webView}
-         source={{uri: this.state.url}} 
-        //  renderLoading={true}
-         startInLoadingState = {true} 
-         onNavigationStateChange={(event)=>{this.onNavigationStateChange(event)}}
-      ></WebView>
+        <WebView
+          style={styles.container}
+          ref={webView => this.webView = webView}
+          source={{ uri: this.state.url }}
+          //  renderLoading={true}
+          startInLoadingState={true}
+          onNavigationStateChange={(event) => { this.onNavigationStateChange(event) }}
+        ></WebView>
       </View>
     );
   }

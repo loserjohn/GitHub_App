@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import theme from './theme'
 import popular from './popular'
 import trending from './trending'
+import collect from './collect' 
 
 import {rootCom, RootNavigator} from '../AppNavigators'
 // console.log('@@@@@@@@@@@')
@@ -27,7 +28,7 @@ const index = combineReducers({
     popular:popular,
     trending:trending,
     theme :theme,
-    
+    collect: collect
 })
 
 export default index;

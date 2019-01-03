@@ -15,19 +15,22 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
-
+import FavoriteDao from '../utils/FavoriteDao'
+import { FLAG_STORE } from '../utils/DataStore'
 import TrendingItem from '../common/TrendingItem'
 import TrendingDialog, { timeSpans } from '../common/TrendingDialog'
+import FavoriteUtils from '../utils/FavoriteUtils'
+
 // console.log(timeSpans) 
 
 const tabs = ['all', 'C', 'C#', 'java', 'php', 'node', 'js', '.Net']
-
+const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending) 
 const pageSize = 10
 const THEME_COLOR = "#3697ff"
-
+const flag = FLAG_STORE.flag_trending
 const URL = 'https://github.com/trending/'
 
-let  TrendType = '?since-deily'
+let TrendType = '?since-deily'
 class Tab extends Component {
   constructor(props) {
     super(props);
@@ -35,21 +38,21 @@ class Tab extends Component {
       datas: ''
     }
   }
-  componentDidMount(){
-    DeviceEventEmitter.addListener('trendingSwitch', (tab)=>{
+  componentDidMount() {
+    DeviceEventEmitter.addListener('trendingSwitch', (tab) => {
       this._loadData(false)
     })
   }
 
   //在组件销毁的时候要将其移除
-  componentWillUnmount(){
+  componentWillUnmount() {
     DeviceEventEmitter.remove();
   }
   componentWillMount() {
     this._loadData()
   }
   _loadData(loadmore) {
-    // alert(1)
+
     const { onLoadMoreTrending, onRefreshTrending, storeName } = this.props;
     const url = this._getUrl(storeName)
     // console.log(-10,storeName,url, pageSize)
@@ -58,10 +61,10 @@ class Tab extends Component {
     if (loadmore) {
       onLoadMoreTrending(storeName, store.pageIndex + 1, pageSize, store.items, (res) => {
         this.refs.toast.show(res);
-      })
+      }, favoriteDao)
 
     } else {
-      onRefreshTrending(storeName, url, pageSize)
+      onRefreshTrending(storeName, url, pageSize, favoriteDao)
     }
 
   }
@@ -86,19 +89,23 @@ class Tab extends Component {
     return URL + key + this.props.trendType
   }
 
-  _renderItem(data) {
+  _renderItem(data) { 
     const item = data;
+    // debugger 
     return <TrendingItem
-      item={item}
-      onSelect={() => {
-        // alert(1)
-        
-        // const props = {...this.props,itemData:data}
-        // console.log(props) 
-        NavigationUtil.navigateTo({projectModel:data},'Detail',)
-      }}
       projectModel={item}
-      onFavorite={()=>{}}
+      onSelect={() => {
+        NavigationUtil.navigateTo({projectModel:data,favoriteDao:favoriteDao,flag:flag,callback:(isFavorite)=>{
+          // alert(1)
+          data.isFavorite = isFavorite 
+        }},'Detail',) 
+      }}
+      // projectModel={data}
+      onFavorite={(item, isFavorite) => {
+        // debugger 
+        console.log(item, isFavorite, flag)
+        FavoriteUtils.onFavorite(favoriteDao, item, isFavorite, flag)
+      }}
     ></TrendingItem>
   }
   _getIndicator() {
@@ -112,17 +119,19 @@ class Tab extends Component {
   }
   render() {
     let store = this._store()
+    // console.log(0,store)
+    // debugger
     // const renderItem  = this._renderItem() 
     return (
       <View style={styles.container}>
         <FlatList
-          data={store.projectModes}
+          data={store.projectModels}  
           renderItem={({ item }) => {
             return (
               this._renderItem(item)
             )
           }}
-          keyExtractor={item => '' + (item.id || item.fullName)}
+          // keyExtractor={item => '' + (item.id || item.fullName)}
           onEndReachedThreshold={0.1}
 
           refreshControl={
@@ -169,10 +178,10 @@ const mapStateToProps = state => ({
 })
 const mapDipacthToProps = dispacth => ({
   onRefreshTrending: (labelType, url, pageSize) => {
-    dispacth(actions.onRefreshTrending(labelType, url, pageSize))
+    dispacth(actions.onRefreshTrending(labelType, url, pageSize, favoriteDao))
   },
-  onLoadMoreTrending: (labelType, pageIndex, pageSize, dataArray, callback) => {
-    dispacth(actions.onLoadMoreTrending(labelType, pageIndex, pageSize, dataArray, callback))
+  onLoadMoreTrending: (labelType, pageIndex, pageSize, dataArray, callback,favoriteDao) => {
+    dispacth(actions.onLoadMoreTrending(labelType, pageIndex, pageSize, dataArray, callback, favoriteDao))
   }
 })
 
@@ -190,7 +199,7 @@ class TrendingPage extends Component {
     }
   }
 
-  
+
 
   initTab() {
     // console.log('Home',this.props.nav)
@@ -200,7 +209,7 @@ class TrendingPage extends Component {
         screen: props => {
           return (
             // <View style={{height:40,overflow:'hidden'}}>
-            <TrendingTab {...props} storeName={item} trendType = {this.state.timeSpan}/>
+            <TrendingTab {...props} storeName={item} trendType={this.state.timeSpan} />
             // </View>
 
 

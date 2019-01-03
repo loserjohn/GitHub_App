@@ -13,12 +13,7 @@ import HTMLView from 'react-native-htmlview'
 import BaseItem  from '../common/BaseItem'
 
 class PopularItem extends BaseItem {
-    constructor(props){
-        super(props)
-        this.state = {
-            isFavorite: this.props.projectModel.isFavorite 
-        } 
-    }
+    
     render() {
         const {projectModel } = this.props
         // console.log(item)

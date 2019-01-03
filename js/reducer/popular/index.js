@@ -13,7 +13,6 @@ const initState ={
 // }
 
 const popular = (state = initState, action) => {
-    // console.log(22222,action )
     // 判断 action 类型
 
  

@@ -13,7 +13,7 @@ export function handleData(actionType,dispatch, storeName, data, pageSize,favori
 
     let showItems =  pageSize > fixItem.length ? fixItem : fixItem.slice(0, pageSize)
     _projectModules(showItems,favoriteDao, projectModels=>{
-        // console.log(projectModels) 
+        // console.log(projectModels)  
         dispatch({
             type: actionType,
             storeName: storeName,

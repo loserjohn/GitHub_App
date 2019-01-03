@@ -5,37 +5,277 @@
  * @format
  * @flow
  */
-   
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,Button} from 'react-native';
-// import Navigation from '../Navigation';
+import Toast, { DURATION } from 'react-native-easy-toast'
+import React, { Component } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl, DeviceInfo } from 'react-native';
+import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
-import { connect } from 'react-redux';
+// import DataStore from '../utils/DataStore'
 
-class ColletPage extends Component {
+import NavigationBar from '../common/NavigationBar'
+import NavigationUtil from '../utils/NavigationUtil'
+import { connect } from 'react-redux';
+import FavoriteDao from '../utils/FavoriteDao'
+import PopularItem from '../common/PopularItem'
+
+import FavoriteUtils from '../utils/FavoriteUtils'
+import { FLAG_STORE } from '../utils/DataStore'
+
+// const URL = 'https://api.github.com/search/repositories?q='
+const tabs = ['最新', '趋势']
+// const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
+const favoriteDao_p = new FavoriteDao(FLAG_STORE.flag_popular)
+const favoriteDao_t = new FavoriteDao(FLAG_STORE.flag_trending)
+const pageSize = 10
+const THEME_COLOR = "#3697ff"
+// const flag = FLAG_STORE.flag_popular
+
+class CollectItem extends Component {
+  constructor(props) {
+    super(props);
+    this.type = this.props.storeName
+  }
   render() {
-    return (
-      <View style={styles.container}>
-       <Button 
-        title="黄色"
-        onPress = {()=>{      
-         this.props.onThemeChange('#fd7616')
-            //  alert(1)
-        }} ></Button>
-      </View> 
-    );
+    const item = this.props.projectModel
+    // console.log(666,this.props)
+    const tabitems = this.type == 'popular' ?
+      <PopularItem
+        projectModel={item}
+        onSelect={() => {
+          NavigationUtil.navigateTo({
+            projectModel: item, favoriteDao: favoriteDao_p, flag: flag, callback: (isFavorite) => {
+              // alert(1)
+              item.isFavorite = isFavorite
+            }
+          }, 'Detail')
+        }}
+        // projectModel={data}
+        onFavorite={(item, isFavorite) => {
+
+          FavoriteUtils.onFavorite(favoriteDao_p, item, isFavorite, flag)
+        }}
+      ></PopularItem> :
+      <TrendingItem
+        projectModel={item}
+        onSelect={() => {
+          NavigationUtil.navigateTo({
+            projectModel: item, favoriteDao: favoriteDao_t, flag: flag, callback: (isFavorite) => {
+              // alert(1)
+              item.isFavorite = isFavorite
+            }
+          }, 'Detail')
+        }}
+        // projectModel={data}
+        onFavorite={(item, isFavorite) => {
+          // debugger 
+          console.log(item, isFavorite, flag)
+          FavoriteUtils.onFavorite(favoriteDao_t, item, isFavorite, flag)
+        }}
+      ></TrendingItem>
+    return  <View>{tabitems}</View>
+    
   }
 }
-const mapStateToProps = state =>({})
-const mapDispatchToProps = dispatch =>({
-  onThemeChange:theme=>dispatch(actions.onThemeChange(theme))
+
+
+
+class Tab extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      datas: ''
+    }
+    // debugger
+    this.flag = this.props.storeName
+    // alert( this.flag)
+  }
+  componentWillMount() {
+    this._loadData()
+  }
+  _loadData(loadmore) {
+    const { onFetchCollect } = this.props;
+    if (loadmore) {
+
+
+    } else {
+      onFetchCollect(this.flag)
+    }
+
+  }
+
+  _store() {
+    const { collect, storeName } = this.props
+    console.log(0, this.props)
+    let store = collect[this.flag]
+    if (!store) {
+      store = {
+        isloading: false,
+        // pageIndex:1,
+        projectModels: [],  //要显示的数据
+      }
+    }
+    // console.log(0,store) 
+    return store
+  }
+
+  _renderItem(data) {
+    const item = data.item; 
+
+    return <CollectItem
+      projectModel={item}
+      storeName={this.flag}
+    ></CollectItem>
+    // return <Text>dfsadsfdas </Text>
+
+  }
+  _getIndicator() {
+    // debugger 
+
+    return this._store().hideLoadingMore === true ? null :
+      <View style={styles.nomore}>
+        <ActivityIndicator size="small" color="#d3d3d3" />
+      </View>
+
+  }
+  render() {
+    let store = this._store()
+    // console.log(store)
+    return (
+      <View style={styles.container}>
+        <FlatList
+          data={store.projectModels}
+          renderItem={({ item }) => {
+            return (
+              this._renderItem(item)
+              // <Text>dsfdsfasd</Text>      
+            )
+          }}
+          //  keyExtractor = {}
+          onEndReachedThreshold={0.1}
+
+          refreshControl={
+            <RefreshControl
+              refreshing={store.isloading}
+              onRefresh={() => { this._loadData(false) }}
+              colors={["#3697ff"]}
+              // enabled = {true}
+              tintColor="red"
+              storeName='客官请稍后'
+            />
+          }
+          refreshing={store.isloading}
+
+          onEndReached={() => {
+            setTimeout(() => {
+              if (this.canLoadMore) {
+                this._loadData(true);
+                this.canLoadMore = false
+              }
+            }, 100)
+
+          }}
+          onMomentumScrollBegin={() => {
+            this.canLoadMore = true;
+          }}
+        ></FlatList>
+        <Toast
+          ref="toast"
+          position='center'
+          opacity={0.8}
+        />
+      </View>
+    )
+  }
+}
+
+const mapStateToProps = state => ({
+  nav: state.nav,
+  collect: state.collect
 })
-export default connect(mapStateToProps,mapDispatchToProps)(ColletPage)
+const mapDipacthToProps = dispacth => ({
+  onFetchCollect: (storeName) => {
+    // console.log(labelType,url,pageSize)
+    dispacth(actions.onFetchCollect(storeName))
+  }
+})
+
+const CollectTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
+
+
+
+
+
+class Collect extends Component {
+
+  initTab() {
+    // console.log('Home',this.props.nav)
+    const Tabs = {}
+    tabs.forEach((item, index) => {
+      Tabs[item] = {
+        screen: props => {
+          return (
+            // <View style={{height:40,overflow:'hidden'}}>
+            <CollectTab {...props} storeName={item == '最新' ? 'popular' : 'trending'} />
+            // </View>                
+          )
+        },
+        navigationOptions: {
+          storeName: item,
+          header: null
+        }
+      }
+    })
+    return Tabs
+  }
+  render() {
+    let statusBar = {
+      backgroundColor: THEME_COLOR,
+      barStyle: 'light-content'
+    }
+    let navigationBar = <NavigationBar
+      title={'收藏'}
+      statusBar={statusBar}
+      style={{
+        backgroundColor: THEME_COLOR
+      }}
+    />
+    const Tabs = this.initTab()
+    const TabNav = createMaterialTopTabNavigator(Tabs, {
+      swipeEnabled: true,
+      tabBarOptions: {
+        labelStyle: {
+          fontSize: 12,
+        },
+        tabStyle: {
+          // width: 100,
+        },
+        style: {
+          backgroundColor: '#3697ff',
+          height: 40,
+          overflow: 'hidden'
+        },
+        indicatorStyle: {
+          backgroundColor: '#b9d1ff'
+        },
+        scrollEnabled: true
+      },
+      lazy: true
+    })
+    return (
+      <View style={{ flex: 1, marginTop: DeviceInfo.isIPhoneX_deprecated ? 30 : 0 }}>
+        {navigationBar}
+        <TabNav />
+      </View>
+    )
+  }
+}
+
+
+export default connect()(Collect)
+
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
@@ -48,4 +288,9 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  nomore: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    lineHeight: 40
+  }
 });

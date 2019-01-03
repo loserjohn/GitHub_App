@@ -82,12 +82,14 @@ class Tab extends Component {
     return <PopularItem
       projectModel={item}
       onSelect={() => {
-        NavigationUtil.navigateTo({projectModel:data},'Detail',) 
+        NavigationUtil.navigateTo({projectModel:data,favoriteDao:favoriteDao,flag:flag,callback:(isFavorite)=>{
+          // alert(1)
+          data.isFavorite = isFavorite 
+        }},'Detail',) 
       }}
       // projectModel={data}
       onFavorite={(item,isFavorite)=>{
-        // debugger 
-        console.log(item,isFavorite,flag)
+
         FavoriteUtils.onFavorite(favoriteDao,item,isFavorite,flag)
       }}
     ></PopularItem>
@@ -160,7 +162,7 @@ const mapStateToProps = state => ({
   popular: state.popular
 })
 const mapDipacthToProps = dispacth => ({
-  onFetchData: (labelType,url,pageSize) => {
+  onFetchData: (labelType,url,pageSize) => { 
     // console.log(labelType,url,pageSize)
     dispacth(actions.onFetchData(labelType, url,pageSize,favoriteDao))
   }, 

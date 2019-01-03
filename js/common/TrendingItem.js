@@ -16,18 +16,11 @@ class TrendingItem extends BaseItem {
 
     render() {
         const {projectModel } = this.props
-        // console.log(item)
-        const {item} =  projectModel;
-        // console.log(item)
-        if (!item || !item.meta) return null;
 
-        // const favoriButton = <TouchableOpacity
-        //     style={{ padding: 6 }}
-        //     onPress={() => { }}
-        //     underlayColor={'transparent'}
-        // >
-        //     <FontAwesome name="star-o" size={26} style={{ color: "red" }}></FontAwesome>
-        // </TouchableOpacity>
+        const item =  projectModel.item;
+ 
+        if (!item || !item.meta) return null;
+ 
 
         let description = '<p>' + item.description + '</p>'
         return (
