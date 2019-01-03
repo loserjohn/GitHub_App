@@ -24,7 +24,7 @@ export default class FavoriteDao {
     // 更新收藏的key的集合
     updatedFavoriteKeys(key, isAdd ) {
         AsyncStorage.getItem(this.favoriteKey, (error, result) => {
-            alert(this.favoriteKey)
+            // alert(this.favoriteKey)
             if (!error) {
                 let favoriteKeys = [];
                 if (result) {

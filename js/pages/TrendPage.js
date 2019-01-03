@@ -20,11 +20,12 @@ import { FLAG_STORE } from '../utils/DataStore'
 import TrendingItem from '../common/TrendingItem'
 import TrendingDialog, { timeSpans } from '../common/TrendingDialog'
 import FavoriteUtils from '../utils/FavoriteUtils'
-
+import EventBus from 'react-native-event-bus'
+import Event from '../utils/EventType'
 // console.log(timeSpans) 
 
 const tabs = ['all', 'C', 'C#', 'java', 'php', 'node', 'js', '.Net']
-const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending) 
+const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending)
 const pageSize = 10
 const THEME_COLOR = "#3697ff"
 const flag = FLAG_STORE.flag_trending
@@ -35,17 +36,28 @@ class Tab extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datas: ''
+      datas: '',
+      switchFavorite:false
     }
   }
   componentDidMount() {
     DeviceEventEmitter.addListener('trendingSwitch', (tab) => {
       this._loadData(false)
     })
+
+    EventBus.getInstance().addListener(Event.trending_favorite,(data)=>{
+      this.setState({switchFavorite:true})
+    })
+    EventBus.getInstance().addListener(Event.bottom_select,this.listener = (data)=>{
+      if(data.to===1 && this.state.switchFavorite){
+        this._loadData()
+      }
+    })
   }
 
-  //在组件销毁的时候要将其移除
-  componentWillUnmount() {
+  componentWillUnmount(){
+    EventBus.getInstance().removeListener(this.listener)
+
     DeviceEventEmitter.remove();
   }
   componentWillMount() {
@@ -89,16 +101,18 @@ class Tab extends Component {
     return URL + key + this.props.trendType
   }
 
-  _renderItem(data) { 
+  _renderItem(data) {
     const item = data;
     // debugger 
     return <TrendingItem
       projectModel={item}
       onSelect={() => {
-        NavigationUtil.navigateTo({projectModel:data,favoriteDao:favoriteDao,flag:flag,callback:(isFavorite)=>{
-          // alert(1)
-          data.isFavorite = isFavorite 
-        }},'Detail',) 
+        NavigationUtil.navigateTo({
+          projectModel: data, favoriteDao: favoriteDao, flag: flag, callback: (isFavorite) => {
+            // alert(1)
+            data.isFavorite = isFavorite
+          }
+        }, 'Detail')
       }}
       // projectModel={data}
       onFavorite={(item, isFavorite) => {
@@ -125,7 +139,7 @@ class Tab extends Component {
     return (
       <View style={styles.container}>
         <FlatList
-          data={store.projectModels}  
+          data={store.projectModels}
           renderItem={({ item }) => {
             return (
               this._renderItem(item)
@@ -180,7 +194,7 @@ const mapDipacthToProps = dispacth => ({
   onRefreshTrending: (labelType, url, pageSize) => {
     dispacth(actions.onRefreshTrending(labelType, url, pageSize, favoriteDao))
   },
-  onLoadMoreTrending: (labelType, pageIndex, pageSize, dataArray, callback,favoriteDao) => {
+  onLoadMoreTrending: (labelType, pageIndex, pageSize, dataArray, callback, favoriteDao) => {
     dispacth(actions.onLoadMoreTrending(labelType, pageIndex, pageSize, dataArray, callback, favoriteDao))
   }
 })

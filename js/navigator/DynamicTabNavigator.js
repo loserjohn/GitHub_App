@@ -9,7 +9,8 @@ import PopularPage from '../pages/PopularPage'
 import TrendPage from '../pages/TrendPage'
 import ColletPage from '../pages/ColletPage'
 import MinePage from '../pages/MinePage'
-
+import EventBus from 'react-native-event-bus'
+import Event from '../utils/EventType'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import { connect } from 'react-redux';
@@ -115,7 +116,13 @@ class DynamicTabNavigator extends Component {
         // 设置显示的tab
         const TabBar = this.initNav()
         
-        return <TabBar />
+        return <TabBar onNavigationStateChange = {(prevState,nextState,action)=>{
+            // console.log(prevState,nextState,action) 
+            EventBus.getInstance().fireEvent(Event.bottom_select,{
+                from: prevState.index,
+                to: nextState.index
+            })
+        }}/>
     }
 }
 

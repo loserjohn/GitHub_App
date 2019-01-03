@@ -20,7 +20,8 @@ import PopularItem from '../common/PopularItem'
 import FavoriteDao from '../utils/FavoriteDao'
 import {FLAG_STORE} from '../utils/DataStore'
 import FavoriteUtils from '../utils/FavoriteUtils'
-
+import EventBus from 'react-native-event-bus'
+import Event from '../utils/EventType'
 
 const URL = 'https://api.github.com/search/repositories?q='
 const tabs = ['php', 'java', 'node', 'js', 'C', 'C#', '.Net']
@@ -35,11 +36,24 @@ class Tab extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      datas: ''
+      datas: '',
+      switchFavorite:false
     }
   }
   componentWillMount() {
     this._loadData()
+    EventBus.getInstance().addListener(Event.popular_favorite,(data)=>{
+      this.setState({switchFavorite:true})
+    })
+    EventBus.getInstance().addListener(Event.bottom_select,this.listener = (data)=>{
+      if(data.to===0 && this.state.switchFavorite){
+        this._loadData()
+      }
+    })
+  }
+
+  componentWillUnmount(){
+    EventBus.getInstance().removeListener(this.listener)
   }
   _loadData(loadmore) {
     const { onLoadMorePopular, onFetchData, storeName } = this.props;
@@ -234,7 +248,7 @@ class PopularPage extends Component {
       lazy: true
     })
     return (
-      <View style={{flex:1,marginTop:DeviceInfo.isIPhoneX_deprecated?30:0}}>
+      <View style={{flex:1,marginTop:DeviceInfo.isIPhoneX_deprecated?30:0}} >
       {navigationBar}
         <TabNav />
       </View>

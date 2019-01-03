@@ -11,22 +11,26 @@ import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl, De
 import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
 // import DataStore from '../utils/DataStore'
-
+import Event from '../utils/EventType'
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
 import FavoriteDao from '../utils/FavoriteDao'
 import PopularItem from '../common/PopularItem'
-
+import TrendingItem from '../common/TrendingItem'
 import FavoriteUtils from '../utils/FavoriteUtils'
 import { FLAG_STORE } from '../utils/DataStore'
+import EventBus from 'react-native-event-bus'
+
+
+
 
 // const URL = 'https://api.github.com/search/repositories?q='
 const tabs = ['最新', '趋势']
 // const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
 const favoriteDao_p = new FavoriteDao(FLAG_STORE.flag_popular)
 const favoriteDao_t = new FavoriteDao(FLAG_STORE.flag_trending)
-const pageSize = 10
+// const pageSize = 10
 const THEME_COLOR = "#3697ff"
 // const flag = FLAG_STORE.flag_popular
 
@@ -37,13 +41,13 @@ class CollectItem extends Component {
   }
   render() {
     const item = this.props.projectModel
-    // console.log(666,this.props)
+    // console.log(666,this.props )
     const tabitems = this.type == 'popular' ?
       <PopularItem
         projectModel={item}
         onSelect={() => {
           NavigationUtil.navigateTo({
-            projectModel: item, favoriteDao: favoriteDao_p, flag: flag, callback: (isFavorite) => {
+            projectModel: item, favoriteDao: favoriteDao_p, flag: this.type, callback: (isFavorite) => {
               // alert(1)
               item.isFavorite = isFavorite
             }
@@ -51,15 +55,15 @@ class CollectItem extends Component {
         }}
         // projectModel={data}
         onFavorite={(item, isFavorite) => {
-
-          FavoriteUtils.onFavorite(favoriteDao_p, item, isFavorite, flag)
+          EventBus.getInstance().fireEvent(Event.popular_favorite,{ }) 
+          FavoriteUtils.onFavorite(favoriteDao_p, item, isFavorite, this.type)
         }}
       ></PopularItem> :
       <TrendingItem
         projectModel={item}
         onSelect={() => {
           NavigationUtil.navigateTo({
-            projectModel: item, favoriteDao: favoriteDao_t, flag: flag, callback: (isFavorite) => {
+            projectModel: item, favoriteDao: favoriteDao_t, flag: this.type, callback: (isFavorite) => {
               // alert(1)
               item.isFavorite = isFavorite
             }
@@ -67,9 +71,8 @@ class CollectItem extends Component {
         }}
         // projectModel={data}
         onFavorite={(item, isFavorite) => {
-          // debugger 
-          console.log(item, isFavorite, flag)
-          FavoriteUtils.onFavorite(favoriteDao_t, item, isFavorite, flag)
+          EventBus.getInstance().fireEvent(Event.trending_favorite,{ }) 
+          FavoriteUtils.onFavorite(favoriteDao_t, item, isFavorite, this.type)
         }}
       ></TrendingItem>
     return  <View>{tabitems}</View>
@@ -91,7 +94,17 @@ class Tab extends Component {
   }
   componentWillMount() {
     this._loadData()
+    EventBus.getInstance().addListener(Event.bottom_select,this.listener = (data)=>{
+      if(data.to === 2){
+        this._loadData(false)
+      }
+    })
   }
+
+  componentWillUnmount(){
+    EventBus.getInstance().removeListener(this.listener)
+  }
+
   _loadData(loadmore) {
     const { onFetchCollect } = this.props;
     if (loadmore) {
@@ -105,7 +118,7 @@ class Tab extends Component {
 
   _store() {
     const { collect, storeName } = this.props
-    console.log(0, this.props)
+    // console.log(0, this.props)
     let store = collect[this.flag]
     if (!store) {
       store = {
@@ -119,7 +132,7 @@ class Tab extends Component {
   }
 
   _renderItem(data) {
-    const item = data.item; 
+    const item = data; 
 
     return <CollectItem
       projectModel={item}
@@ -207,6 +220,7 @@ const CollectTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
 
 class Collect extends Component {
 
+ 
   initTab() {
     // console.log('Home',this.props.nav)
     const Tabs = {}
