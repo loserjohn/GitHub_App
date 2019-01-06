@@ -7,7 +7,11 @@ import FetchDemo from './pages/FetchDemo'
 import AsyncStorageDemo from './pages/AsyncStorageDemo'
 import Detail from './pages/Detail'
 import WelCome from './pages/WelCome'
+import WebPage from './pages/WebPage'
 import DataStoreDemo from './pages/DataStoreDemo'
+import AboutAuthor from './pages/AboutAuthor'
+import AboutPage from './pages/AboutPage'
+
 // import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import MIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -74,6 +78,36 @@ const Main = createStackNavigator({
             },
         }
     },
+    WebPage:{
+        screen: WebPage,
+        navigationOptions:{
+            headerTitle:'教程',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
+    AboutPage:{ 
+        screen: AboutPage,
+        navigationOptions:{
+            headerTitle:'关于',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
+    AboutAuthor:{ 
+        screen: AboutAuthor,
+        navigationOptions:{
+            headerTitle:'关于作者',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
 },{
     initialRouteName :'HomePage',
    
@@ -87,27 +121,6 @@ export const RootNavigator = createSwitchNavigator({
     initialRouteName :'Init'
 })
 
-// class NavigationRoot extends Component{
-//     render(){
-//         return(
-//             <Navigation/>
-//         )
-//     }
-// } 
-// export default Main
-
-
-// export const meddleware = createReactNavigationReduxMiddleware(
-//     'root',
-//     state=>state.nav
-// )
-
-// const mapStateToProps = state =>({
-//     state:state.nav
-// })
-// const AppWithNavigationState =  reduxifyNavigator('Navigation',root)
-
-// export default connect(mapStateToProps)(AppWithNavigationState)  
 
 /**
  * 1.初始化react-navigation与redux的中间件，
