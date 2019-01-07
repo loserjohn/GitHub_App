@@ -4,6 +4,7 @@ import theme from './theme'
 import popular from './popular'
 import trending from './trending'
 import collect from './collect' 
+import langs from './langs' 
 
 import {rootCom, RootNavigator} from '../AppNavigators'
 // console.log('@@@@@@@@@@@')
@@ -24,11 +25,12 @@ const navReducer = (state = initState, action) => {
 
 // 合并reducer
 const index = combineReducers({  
-    nav:navReducer,
-    popular:popular,
-    trending:trending,
-    theme :theme,
-    collect: collect
+    nav: navReducer,
+    popular: popular,
+    trending: trending,
+    theme: theme,
+    collect: collect,
+    langs: langs 
 })
 
 export default index;

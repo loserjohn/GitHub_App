@@ -15,7 +15,7 @@ import ViewUtil from '../utils/ViewUtil'
 import NavigationUtil from '../utils/NavigationUtil'
 import BackPressComponent from '../common/BackPressComponent'
 // import config from '../utils/set'
-import GlobalStyles from '../common/GlobalStyles'
+import GlobalStyles from '../res/styles/GlobalStyles'
 
 
 const window = Dimensions.get('window');

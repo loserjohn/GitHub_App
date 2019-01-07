@@ -15,7 +15,7 @@ import Event from '../utils/EventType'
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
-import FavoriteDao from '../utils/FavoriteDao'
+import FavoriteDao from '../utils/expand/FavoriteDao'
 import PopularItem from '../common/PopularItem'
 import TrendingItem from '../common/TrendingItem'
 import FavoriteUtils from '../utils/FavoriteUtils'

@@ -30,9 +30,11 @@ class WebPage extends Component {
     super(props);
 
     // debugger
+    // console.log() 
+    let url = this.props.navigation.state.params.url
+    this.url = url? url:'https://m.imooc.com/' 
 
-    this.url = 'https://m.imooc.com/'
-    const tittle = '教程'
+    const tittle =this.props.navigation.state.params.tittle?this.props.navigation.state.params.tittle: '教程'
 
 
 

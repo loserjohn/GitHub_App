@@ -10,21 +10,22 @@ import React, { Component } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl,DeviceInfo } from 'react-native';
 import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
-import DataStore from '../utils/DataStore'
+// import DataStore from '../utils/DataStore'
 
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
 
 import PopularItem from '../common/PopularItem'
-import FavoriteDao from '../utils/FavoriteDao'
+import FavoriteDao from '../utils/expand/FavoriteDao'
 import {FLAG_STORE} from '../utils/DataStore'
 import FavoriteUtils from '../utils/FavoriteUtils'
 import EventBus from 'react-native-event-bus'
 import Event from '../utils/EventType'
+import {LANGUAGE_FLAG} from '../utils/expand/LanguageDao'
 
 const URL = 'https://api.github.com/search/repositories?q='
-const tabs = ['php', 'java', 'node', 'js', 'C', 'C#', '.Net']
+let tabs = []
 const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
 
 const pageSize = 10
@@ -192,24 +193,32 @@ const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
 
 
 class PopularPage extends Component { 
+  componentDidMount(){
+    this.props.onRreshLanguage(LANGUAGE_FLAG.flag_popular_language)   
+  }
+
 
   initTab() {
-    // console.log('Home',this.props.nav)
+   const {langs} = this.props
     const Tabs = {}
+ 
+ 
+      tabs = langs 
+      // console.log('langs',tabs)    
+   
     tabs.forEach((item, index) => {
-      Tabs[item] = {
-        screen: props => { return (
-          // <View style={{height:40,overflow:'hidden'}}>
-          <PopularTab {...props} storeName={item} />
-          // </View>
-            
-         
-          ) },
-        navigationOptions: {
-          storeName: item,
-          header: null
+      if(item.checked){
+        Tabs[item.name] = {
+          screen: props => { return (
+            <PopularTab {...props} storeName={item.name} />  
+            ) },
+          navigationOptions: {
+            storeName: item.name,
+            header: null
+          }
         }
       }
+      
     })
     return Tabs
   }
@@ -225,8 +234,11 @@ class PopularPage extends Component {
         backgroundColor:THEME_COLOR
       }}
     />
-    const Tabs = this.initTab()
-    const TabNav = createMaterialTopTabNavigator(Tabs, {
+    // console.log(this.props.langs) 
+    // debugger  
+    const Tabs = this.props.langs && this.initTab()
+
+    const TabNav =this.props.langs?  createMaterialTopTabNavigator(Tabs, {
       swipeEnabled: true,
       tabBarOptions: {
         labelStyle: {
@@ -246,18 +258,27 @@ class PopularPage extends Component {
         scrollEnabled: true
       },
       lazy: true
-    })
+    }):null
     return (
       <View style={{flex:1,marginTop:DeviceInfo.isIPhoneX_deprecated?30:0}} >
       {navigationBar}
-        <TabNav />
+     {TabNav &&  <TabNav />}  
       </View>
     )
   }
 }
+const mapPopularStateToProps = state => ({
+  langs: state.langs[LANGUAGE_FLAG.flag_popular_language]
+})
 
+const mapPopularDipacthToProps = dispacth => ({
+  onRreshLanguage: (flag) => { 
+    // console.log(labelType,url,pageSize)
+    dispacth(actions.onRreshLanguage(flag))
+  }
+})
 
-export default connect()(PopularPage)
+export default connect(mapPopularStateToProps,mapPopularDipacthToProps)(PopularPage)
 
 
 const styles = StyleSheet.create({

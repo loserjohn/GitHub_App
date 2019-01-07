@@ -15,16 +15,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
-import FavoriteDao from '../utils/FavoriteDao'
+import FavoriteDao from '../utils/expand/FavoriteDao'
 import { FLAG_STORE } from '../utils/DataStore'
 import TrendingItem from '../common/TrendingItem'
 import TrendingDialog, { timeSpans } from '../common/TrendingDialog'
 import FavoriteUtils from '../utils/FavoriteUtils'
 import EventBus from 'react-native-event-bus'
 import Event from '../utils/EventType'
-// console.log(timeSpans) 
+import {LANGUAGE_FLAG} from '../utils/expand/LanguageDao'
 
-const tabs = ['all', 'C', 'C#', 'java', 'php', 'node', 'js', '.Net']
+let tabs = []
 const favoriteDao = new FavoriteDao(FLAG_STORE.flag_trending)
 const pageSize = 10
 const THEME_COLOR = "#3697ff"
@@ -117,7 +117,7 @@ class Tab extends Component {
       // projectModel={data}
       onFavorite={(item, isFavorite) => {
         // debugger 
-        console.log(item, isFavorite, flag)
+        // console.log(item, isFavorite, flag)
         FavoriteUtils.onFavorite(favoriteDao, item, isFavorite, flag)
       }}
     ></TrendingItem>
@@ -212,28 +212,35 @@ class TrendingPage extends Component {
       timeSpan: timeSpans[0]
     }
   }
-
+  componentWillMount(){
+    this.props.onRreshLanguage(LANGUAGE_FLAG.flag_trending_language)  
+  
+  }
 
 
   initTab() {
     // console.log('Home',this.props.nav)
+    // console.log(1111,this.props.langs)   
     const Tabs = {}
+    tabs = this.props.langs 
     tabs.forEach((item, index) => {
-      Tabs[item] = {
+      if(item.checked){
+      Tabs[item.name] = {
         screen: props => {
           return (
             // <View style={{height:40,overflow:'hidden'}}>
-            <TrendingTab {...props} storeName={item} trendType={this.state.timeSpan} />
+            <TrendingTab {...props} storeName={item.name} trendType={this.state.timeSpan} />
             // </View>
 
 
           )
         },
         navigationOptions: {
-          storeName: item,
+          storeName: item.name,
           header: null
         }
       }
+    } 
     })
     return Tabs
   }
@@ -255,7 +262,7 @@ class TrendingPage extends Component {
             style={{ color: 'white' }}
           ></MaterialIcons>
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity>  
 
     </View>
 
@@ -292,10 +299,10 @@ class TrendingPage extends Component {
         backgroundColor: THEME_COLOR
       }}
     />
-    const Tabs = this.initTab()
+    const Tabs =this.props.langs &&  this.initTab()
     let TabNav;
-    if (!this.tabNav) {
-      this.tabNav = createMaterialTopTabNavigator(Tabs, {
+    if (!this.tabNav ) {
+      this.tabNav =this.props.langs?  createMaterialTopTabNavigator(Tabs, {
         swipeEnabled: true,
         tabBarOptions: {
           labelStyle: {
@@ -315,29 +322,34 @@ class TrendingPage extends Component {
           scrollEnabled: true
         },
         lazy: true
-      })
+      }):null
 
     }
     TabNav = this.tabNav
     return (
       <View style={{ flex: 1 }}>
         {navigationBar}
-        <TabNav />
+        {TabNav &&  <TabNav />}  
         {this.renderDialogView()}
       </View>
     )
   }
 }
+const mapTrendingStateToProps = state => ({
+  langs: state.langs[LANGUAGE_FLAG.flag_trending_language]
+})
 
+const mapTrendingDipacthToProps = dispacth => ({
+  onRreshLanguage: (flag) => { 
+    dispacth(actions.onRreshLanguage(flag))
+  }
+})
 
-export default connect()(TrendingPage)
+export default connect(mapTrendingStateToProps,mapTrendingDipacthToProps)(TrendingPage)
 
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {

@@ -2,6 +2,7 @@ import { onThemeChange} from './theme'
 import { onFetchData,onLoadMorePopular} from './popular'
 import { onRefreshTrending,onLoadMoreTrending} from './trending'
 import { onFetchCollect} from './collect'
+import { onRreshLanguage} from './langs'
 
 export default {
     onThemeChange,
@@ -9,5 +10,6 @@ export default {
     onLoadMorePopular,
     onRefreshTrending,
     onLoadMoreTrending,
-    onFetchCollect
+    onFetchCollect,
+    onRreshLanguage
 }

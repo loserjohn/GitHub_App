@@ -4,7 +4,7 @@ export const FLAG_STORE = {
     flag_popular: 'popular',
     flag_trending: 'trending'
 }
-import {handleData} from '../ActionsUtil'
+import {handleData ,_projectModules} from '../ActionsUtil'
 
 // 下拉刷新
 export function onRefreshTrending(storeName,src, pageSize,favoriteDao) {
@@ -45,7 +45,7 @@ export function onRefreshTrending(storeName,src, pageSize,favoriteDao) {
  * @param {*} [dataArray=[]]
  * @param {*} callback
  */
-export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [], callback) {
+export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [], callback,favoriteDao) {
     //   console.log(storeName,pageIndex,pageSize)
     return (dispatch) => {
 
@@ -61,16 +61,15 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
                     type: Types.TRENDING_LOADMORE_ERROR,
                     error: 'no more',
                     storeName: storeName,
-                    pageIndex: --pageIndex,
-                    projectModes: dataArray
+                    pageIndex: --pageIndex
                 })
             } else {
 
                 let max = pageIndex * pageSize > dataArray.length ? dataArray.length : pageIndex * pageSize;
                 _projectModules(dataArray.slice(0,max) ,favoriteDao,projectModels=>{
-                    debugger
+                    // debugger 
                     dispatch({
-                        type:Types.POPULAR_LOADMORE_SUCCESS,
+                        type:Types.TRENDING_LOADMORE_SUCCESS, 
                         items:dataArray ,
                         storeName:storeName,
                         pageIndex:pageIndex,   
@@ -78,13 +77,6 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
                     })
                 })
 
-                // dispatch({
-                //     type: Types.TRENDING_LOADMORE_SUCCESS,
-                //     items: dataArray,
-                //     storeName: storeName,
-                //     pageIndex: pageIndex,
-                //     projectModes: dataArray.slice(0, max)
-                // })
             }
 
         }, 500)

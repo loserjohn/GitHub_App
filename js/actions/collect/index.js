@@ -1,6 +1,6 @@
 import Types from "../types"
 import {_projectModules} from '../ActionsUtil'
-import FavoriteDao from '../../utils/FavoriteDao'
+import FavoriteDao from '../../utils/expand/FavoriteDao'
 // 下拉刷新
 export function onFetchCollect(storeName){
     const favoriteDao = new FavoriteDao(storeName)

@@ -31,7 +31,7 @@ const trending = (state = initState, action) => {
     
         case Types.TRENDING_FRESH_SUCCESS:
         //    下拉刷新成功
-        console.log(2,action.projectModels)
+        // console.log(2,action.projectModels)
         return {
             ...state, 
             [action.storeName]:{

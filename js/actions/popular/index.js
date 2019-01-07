@@ -42,7 +42,7 @@ export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],ca
     return (dispatch)=>{
 
         setTimeout(()=>{
-            // console.log(666,storeName,pageIndex,pageSize,dataArray)  
+        //    alert(1) 
             if((pageIndex-1)*pageSize>=dataArray.length){
                 // 如果全部加载数据
                
@@ -56,8 +56,9 @@ export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],ca
                     pageIndex:--pageIndex
                 })
             }else{
-
+               
                 let max = pageIndex*pageSize>dataArray.length?dataArray.length:pageIndex*pageSize;
+            
                 _projectModules(dataArray.slice(0,max) ,favoriteDao,projectModels=>{
 
                     dispatch({
