@@ -30,7 +30,7 @@ const langs = (state = initState, action) => {
         // })
         return {
             ...state, 
-            [action.flag]:action.keys
+            [action.flag]:action.items 
         };
  
         default:

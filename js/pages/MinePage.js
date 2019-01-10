@@ -16,9 +16,10 @@ import Feather from 'react-native-vector-icons/Feather';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 import Anticons from 'react-native-vector-icons/AntDesign';
 
-
 import { MORE_MENUS } from '../common/MoreMenus'
 import ViewUtil from '../utils/ViewUtil'
+import {LANGUAGE_FLAG} from '../utils/expand/LanguageDao'
+
 
 // import Test from '../common/Test'
 
@@ -48,6 +49,12 @@ class MinePage extends Component {
         break;
       case MORE_MENUS.About:
         NavigationUtil.navigateTo({}, 'AboutPage') 
+        break;
+      case MORE_MENUS.Custom_Key:
+        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys,isDelect:false}, 'CustomKey') 
+        break;
+      case MORE_MENUS.Custom_Language:
+        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages,isDelect:false}, 'CustomKey') 
         break;
       default:
         break;
@@ -101,15 +108,15 @@ class MinePage extends Component {
             {/* <View style={styles.line}></View> */}
           </TouchableOpacity>
           {this.renderPanel(MORE_MENUS.Tutorial)}
-
-          <Text style={{ lineHeight: 40 ,paddingLeft:16}}>趋势管理</Text>
-          {this.renderPanel(MORE_MENUS.Custom_Language)}
-          {this.renderPanel(MORE_MENUS.Sort_Language)}
-
+          
           <Text style={{ lineHeight: 40,paddingLeft:16 }}>最热管理</Text>
           {this.renderPanel(MORE_MENUS.Custom_Key)}
           {this.renderPanel(MORE_MENUS.Sort_Key)}
           {this.renderPanel(MORE_MENUS.Remove_Key)} 
+
+          <Text style={{ lineHeight: 40 ,paddingLeft:16}}>趋势管理</Text>
+          {this.renderPanel(MORE_MENUS.Custom_Language)}
+          {this.renderPanel(MORE_MENUS.Sort_Language)} 
 
           <Text style={{ lineHeight: 40 ,paddingLeft:16}}> 设置</Text>
           {this.renderPanel(MORE_MENUS.Custom_Theme)}

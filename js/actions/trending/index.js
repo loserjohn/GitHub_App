@@ -77,11 +77,8 @@ export function onLoadMoreTrending(storeName, pageIndex, pageSize, dataArray = [
                     })
                 })
 
-            }
+            } 
 
         }, 500)
-
-
-
     }
 }

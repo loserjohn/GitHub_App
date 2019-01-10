@@ -63,11 +63,21 @@ export default class ViewUtil {
     }
 
 
+    // 菜单图标
     static getMenuItem(callback,menu,color,collapseIcon){
         return ViewUtil.getSettingItem(callback,menu.name,color,menu.Icons,menu.icon,collapseIcon)
         
     }
 
+    // 选中图标
+    static getCheckIcon(bool){
+        return <Ionicons
+        name={bool?'ios-checkbox':'ios-checkbox-outline'}
+        size={20}
+        style={{ color: bool?'#3697ff':'#d3d3d3', opacity: 0.9, marginRight: 10 }}
+    ></Ionicons>
+ 
+    }
 }
 
 

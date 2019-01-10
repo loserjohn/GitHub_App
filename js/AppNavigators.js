@@ -11,6 +11,7 @@ import WebPage from './pages/WebPage'
 import DataStoreDemo from './pages/DataStoreDemo'
 import AboutAuthor from './pages/AboutAuthor'
 import AboutPage from './pages/AboutPage'
+import CustomKey from './pages/CustomKey'
 
 // import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import MIcon from 'react-native-vector-icons/MaterialIcons';
@@ -102,6 +103,16 @@ const Main = createStackNavigator({
         screen: AboutAuthor,
         navigationOptions:{
             headerTitle:'关于作者',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
+    CustomKey:{ 
+        screen: CustomKey,
+        navigationOptions:{
+            headerTitle:'自定义',
             header:null,
             headerTitleStyle:{
                 fontSize:16

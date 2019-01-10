@@ -11,7 +11,7 @@ export  function  onRreshLanguage(flag) {
             dispatch({
                 type: Types.LANGUAGE_FRESH_SUCCESS,
                 flag:flag,
-                keys: res
+                items: res
             })  
         } catch (error) {
             console.log('error:' + error) 

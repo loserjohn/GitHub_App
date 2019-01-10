@@ -146,16 +146,16 @@ class Tab extends Component {
           }
           refreshing={store.isloading}
 
-          // ListFooterComponent={() => { 
-          //   return this._getIndicator() 
-          // }}
+          ListFooterComponent={() => { 
+            return <Text>more</Text> 
+          }}
           onEndReached={() => {
             setTimeout(() => {
               if (this.canLoadMore) {
                 this._loadData(true);
                 this.canLoadMore = false
               }
-            }, 100)
+            }, 10)
 
           }}
           onMomentumScrollBegin={() => {
@@ -194,7 +194,7 @@ const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
 
 class PopularPage extends Component { 
   componentDidMount(){
-    this.props.onRreshLanguage(LANGUAGE_FLAG.flag_popular_language)   
+    this.props.onRreshLanguage(LANGUAGE_FLAG.keys)   
   }
 
 
@@ -240,20 +240,35 @@ class PopularPage extends Component {
 
     const TabNav =this.props.langs?  createMaterialTopTabNavigator(Tabs, {
       swipeEnabled: true,
+      // tabBarComponent:
+      //   ()=>{
+      //     return <Text>dasf </Text> 
+      //   } ,
       tabBarOptions: {
+        activeTintColor :'#3697ff', 
         labelStyle: {
           fontSize: 12,
+          color:'#757575'
         },
         tabStyle: {
-          // width: 100,
-        },
+          width:80,   
+          paddingHorizontal:10,
+          // marginHorizontal:10,
+          borderWidth:1,
+          borderColor:'#eee',
+          borderRadius:20   ,
+          height:24,  
+        }, 
         style: {
-          backgroundColor: '#3697ff',
-          height:40,
-          overflow:'hidden'
+          backgroundColor: '#fff',
+          height:40,  
+          paddingVertical:8,
+          overflow:'hidden',
+          alignItems:'center'
         },
         indicatorStyle: {
-          backgroundColor: '#b9d1ff'
+          // height:4,
+          backgroundColor: '#3697ff'
         },
         scrollEnabled: true
       },
@@ -268,8 +283,8 @@ class PopularPage extends Component {
   }
 }
 const mapPopularStateToProps = state => ({
-  langs: state.langs[LANGUAGE_FLAG.flag_popular_language]
-})
+  langs: state.langs[LANGUAGE_FLAG.keys]  
+}) 
 
 const mapPopularDipacthToProps = dispacth => ({
   onRreshLanguage: (flag) => { 

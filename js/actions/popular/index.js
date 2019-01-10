@@ -39,6 +39,7 @@ export function onFetchData(storeName,src,pageSize,favoriteDao){
  */
 export function onLoadMorePopular(storeName,pageIndex,pageSize,dataArray = [],callback ,favoriteDao){
 //   console.log(storeName,pageIndex,pageSize)
+// alert(1)   
     return (dispatch)=>{
 
         setTimeout(()=>{

@@ -4,7 +4,8 @@ import AsyncStorage from "AsyncStorage";
 import langs from '../../res/data/langs.json';
 import keys from '../../res/data/keys.json';
 
-export const LANGUAGE_FLAG = { flag_popular_language: 'flag_popular_language', flag_trending_language: 'flag_trending_language' }
+export const LANGUAGE_FLAG = { languages: 'language', keys: 'keys' }
+//popular使用的是keys     trending使用的是language
 /**
  *语言选择功能
  *
@@ -27,7 +28,7 @@ export default class LanguageDao {
                    
                     if (!result) {
                         // debugger 
-                        if (this.flag == LANGUAGE_FLAG.flag_popular_language) {
+                        if (this.flag == LANGUAGE_FLAG.keys) {
                             this.save(keys)
                             resolve(keys) 
                         } else {  
@@ -40,7 +41,7 @@ export default class LanguageDao {
                         try {
                             resolve(JSON.parse(result))
                         } catch (error) {
-                            console.log(error)
+                            console.log(error)  
                         } 
                        
                     }

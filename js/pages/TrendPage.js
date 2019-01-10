@@ -31,7 +31,7 @@ const THEME_COLOR = "#3697ff"
 const flag = FLAG_STORE.flag_trending
 const URL = 'https://github.com/trending/'
 
-let TrendType = '?since-deily'
+// let TrendType = '?since-deily'
 class Tab extends Component {
   constructor(props) {
     super(props);
@@ -213,7 +213,7 @@ class TrendingPage extends Component {
     }
   }
   componentWillMount(){
-    this.props.onRreshLanguage(LANGUAGE_FLAG.flag_trending_language)  
+    this.props.onRreshLanguage(LANGUAGE_FLAG.languages)  
   
   }
 
@@ -336,7 +336,7 @@ class TrendingPage extends Component {
   }
 }
 const mapTrendingStateToProps = state => ({
-  langs: state.langs[LANGUAGE_FLAG.flag_trending_language]
+  langs: state.langs[LANGUAGE_FLAG.languages]
 })
 
 const mapTrendingDipacthToProps = dispacth => ({
