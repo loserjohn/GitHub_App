@@ -239,7 +239,7 @@ class PopularPage extends Component {
     const Tabs = this.props.langs && this.initTab()
 
     const TabNav =this.props.langs?  createMaterialTopTabNavigator(Tabs, {
-      swipeEnabled: true,
+
       // tabBarComponent:
       //   ()=>{
       //     return <Text>dasf </Text> 
@@ -248,23 +248,23 @@ class PopularPage extends Component {
         activeTintColor :'#3697ff', 
         labelStyle: {
           fontSize: 12,
-          color:'#757575'
+          color:'#757575' 
         },
-        tabStyle: {
-          width:80,   
-          paddingHorizontal:10,
-          // marginHorizontal:10,
-          borderWidth:1,
-          borderColor:'#eee',
-          borderRadius:20   ,
-          height:24,  
-        }, 
+        // tabStyle: {
+        //   width:80,   
+        //   paddingHorizontal:10,
+        //   // marginHorizontal:10,
+        //   borderWidth:1,
+        //   borderColor:'#eee',
+        //   borderRadius:20   ,
+        //   height:24,  
+        // },  
         style: {
           backgroundColor: '#fff',
           height:40,  
-          paddingVertical:8,
+          // paddingVertical:8,
           overflow:'hidden',
-          alignItems:'center'
+          // alignItems:'center'
         },
         indicatorStyle: {
           // height:4,

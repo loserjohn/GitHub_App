@@ -223,7 +223,7 @@ class TrendingPage extends Component {
     // console.log(1111,this.props.langs)   
     const Tabs = {}
     tabs = this.props.langs 
-    tabs.forEach((item, index) => {
+    tabs.forEach((item, index) => {   
       if(item.checked){
       Tabs[item.name] = {
         screen: props => {
@@ -231,8 +231,6 @@ class TrendingPage extends Component {
             // <View style={{height:40,overflow:'hidden'}}>
             <TrendingTab {...props} storeName={item.name} trendType={this.state.timeSpan} />
             // </View>
-
-
           )
         },
         navigationOptions: {
@@ -301,7 +299,7 @@ class TrendingPage extends Component {
     />
     const Tabs =this.props.langs &&  this.initTab()
     let TabNav;
-    if (!this.tabNav ) {
+    // if (!this.tabNav ) {
       this.tabNav =this.props.langs?  createMaterialTopTabNavigator(Tabs, {
         swipeEnabled: true,
         tabBarOptions: {
@@ -324,7 +322,7 @@ class TrendingPage extends Component {
         lazy: true
       }):null
 
-    }
+    // }
     TabNav = this.tabNav
     return (
       <View style={{ flex: 1 }}>

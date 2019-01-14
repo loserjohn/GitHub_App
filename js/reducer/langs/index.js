@@ -19,6 +19,7 @@ const initState ={
 
 const langs = (state = initState, action) => {
     // 判断 action 类型
+    // debugger
     switch (action.type) {
         
         case Types.LANGUAGE_FRESH_SUCCESS:

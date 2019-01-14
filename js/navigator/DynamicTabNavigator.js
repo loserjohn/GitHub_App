@@ -102,7 +102,7 @@ class DynamicTabNavigator extends Component {
         const Tabpage = {PopularPage,TrendPage,ColletPage,MinePage};  
         // 创建底部标签栏
         const TabBar = createBottomTabNavigator(Tabpage,{  
-            initialRouteName :'PopularPage',  
+            initialRouteName :'MinePage',   
             tabBarComponent:props=>{
                 return <TabBarComponent theme={this.props.theme} {...props} />
             } 

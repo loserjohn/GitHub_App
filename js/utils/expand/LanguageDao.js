@@ -21,18 +21,16 @@ export default class LanguageDao {
     // 获取语言类型的配置
     fetch() {
         return new Promise((resolve, reject) => {
-            console.log('flag'+this.flag)
+            // console.log('flag'+this.flag)
             AsyncStorage.getItem(this.flag, (error, result) => {
-                console.log("!!",result)  
-                if (!error) {
-                   
+                // console.log("!!",result)  
+                if (!error) {                
                     if (!result) {
                         // debugger 
                         if (this.flag == LANGUAGE_FLAG.keys) {
                             this.save(keys)
                             resolve(keys) 
-                        } else {  
-                           
+                        } else {                            
                             this.save(langs) 
                             resolve(langs)
                         }

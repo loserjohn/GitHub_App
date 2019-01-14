@@ -56,6 +56,18 @@ class MinePage extends Component {
       case MORE_MENUS.Custom_Language:
         NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages,isDelect:false}, 'CustomKey') 
         break;
+        // 移除标签
+      case MORE_MENUS.Remove_Key:
+        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys,isDelect:true}, 'CustomKey') 
+        break;
+        // 排序标签
+      case MORE_MENUS.Sort_Key: 
+        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys}, 'SortKey') 
+        break;
+      // 语言标签
+      case MORE_MENUS.Sort_Language:
+         NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages}, 'SortKey') 
+         break;
       default:
         break;
     }
@@ -122,7 +134,7 @@ class MinePage extends Component {
           {this.renderPanel(MORE_MENUS.Custom_Theme)}
           {this.renderPanel(MORE_MENUS.About_Auther)}
           {this.renderPanel(MORE_MENUS.About)}
-          {this.renderPanel(MORE_MENUS.Sort_Language)}
+          {/* {this.renderPanel(MORE_MENUS.Sort_Language)} */}
         </ScrollView>
 
 

@@ -4684,6 +4684,11 @@ react-native-screens@^1.0.0-alpha.11:
   resolved "http://registry.npm.taobao.org/react-native-screens/download/react-native-screens-1.0.0-alpha.19.tgz#ecf3c9023e169b7013266d40b9c5599f37667f6d"
   integrity sha1-7PPJAj4Wm3ATJm1AucVZnzdmf20=
 
+react-native-sortable-listview@^0.2.8:
+  version "0.2.8"
+  resolved "http://registry.npm.taobao.org/react-native-sortable-listview/download/react-native-sortable-listview-0.2.8.tgz#0d514fa73eb406a46baea96aa38a71e40257af90"
+  integrity sha1-DVFPpz60BqRrrqlqo4px5AJXr5A=
+
 react-native-tab-view@^0.0.77:
   version "0.0.77"
   resolved "http://registry.npm.taobao.org/react-native-tab-view/download/react-native-tab-view-0.0.77.tgz#11ceb8e7c23100d07e628dc151b57797524d00d4"

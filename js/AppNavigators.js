@@ -12,6 +12,7 @@ import DataStoreDemo from './pages/DataStoreDemo'
 import AboutAuthor from './pages/AboutAuthor'
 import AboutPage from './pages/AboutPage'
 import CustomKey from './pages/CustomKey'
+import SortKey from './pages/SortKey'
 
 // import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import MIcon from 'react-native-vector-icons/MaterialIcons';
@@ -113,6 +114,16 @@ const Main = createStackNavigator({
         screen: CustomKey,
         navigationOptions:{
             headerTitle:'自定义',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
+    SortKey:{ 
+        screen: SortKey,
+        navigationOptions:{
+            headerTitle:'排序',
             header:null,
             headerTitleStyle:{
                 fontSize:16
