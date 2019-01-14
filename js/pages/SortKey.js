@@ -54,15 +54,19 @@ class SortKey extends Component {
         const { langs } = this.props
         this.backPressComponent.componentDidMount();
         const languageDao = new LanguageDao(this.flag)
+        // console.log(0,   langs)  
         // 标签配置页面
         if (!langs[this.flag]) {
             languageDao.fetch().then((res) => {
+                // console.log(res)  
                 this.setState({
                     // 只显示checked==true的项
+                   
                     keys: this.getAllChecked(res)
-                })
+                }) 
             })
         } else {
+
             this.setState({
                 keys: this.getAllChecked(langs[this.flag])
             })
@@ -76,14 +80,17 @@ class SortKey extends Component {
 
     // 移除页面获取的是所有已经选择的
     getAllChecked(keys) {
-        this.checkArr = {}
+        // this.checkArr 是用来存放所有显示的check   数组
+        this.checkArr = []
+        let res = {}
         keys.map((item, index) => {
             if (item.checked) {
-                this.checkArr[item.name] = item
+                res[item.name] = item;
+                this.checkArr.push(item)
             }
         })
 
-        return this.checkArr
+        return res
     }
 
     // 返回键处理
@@ -122,25 +129,57 @@ class SortKey extends Component {
     }
     // 保存结果
     save = () => {
-        const checkValueArr = this.checkValue;
-        if (!checkValueArr.length) return;
+        const checkValue = this.checkValue;
+        if (!checkValue.length) return;
 
         let onRreshLanguage = this.props.onRreshLanguage
-        const { keys } = this.state;
+
+        let { keys } = this.state; //排序后的数组 是个对象
+        let defaultKeys = [];
+       
+        this.props.langs[this.flag].map(item=>{
+            // if(!item.checked){
+                defaultKeys.push({...item})   
+            // }       
+        }) // 原始数组是数组
+        // defaultKeys.push(...this.props.langs[this.flag])
+        // console.log( 111,this.props.langs[this.flag][0] === defaultKeys[0
+        // ])   
+        console.log(0,defaultKeys) 
+
+        const  sortNameArr = this.sortNameArr   //排完顺序的数组名
+        const checkArr = this.checkArr  //未排序的所有选中数据
+
         const languageDao = new LanguageDao(this.flag)
         
 
-        let sortKeys = this.props.langs[this.flag] // 是数组
-console.log(this.props.langs,sortKeys )    
-        // this.sortNameArr.map((item)=>{
-        //     sortKeys[item] = this.checkArr[item]             
-        // })
-
+       
+          
+        keys = Object.values(keys)
+        console.log(222,keys)
+        keys.map((item)=>{
+            // if(item)  ; 
+            let k =  defaultKeys.indexOf(item);
+             console.log(item == defaultKeys[ k])    
+            //  defaultKeys[k] = null; 
+            // let n = {...item}   
+            //  defaultKeys[k] = n      
+             defaultKeys.splice(k,1,{...item} )  
+            // defaultKeys.push({...item})   
+            // let k =  defaultKeys.indexOf(item);
+           
+            // for(let i =0;i<sortNameArr.length;i++){
+            //     if(sortNameArr[i] == item.name)
+            //     defaultKeys.splice(k,1,keys[ item.name] )  
+            // }      
+        }) 
+        
+        console.log(2,defaultKeys)   
 
         //     // 配置标签则直接保存
-        //     languageDao.save(keys);
-        //     onRreshLanguage(this.flag);
-        //     NavigationUtil.backTo(this.props.navigation)
+            languageDao.save(defaultKeys);
+            onRreshLanguage(this.flag);
+            NavigationUtil.backTo(this.props.navigation)
         
 
     }
@@ -196,17 +235,20 @@ console.log(this.props.langs,sortKeys )
     sort(e){
         const {to,from,row} = e;
         this.saveCheckValue(row);//储存操作历史
-        let keys = this.state.keys;
-        this.sortNameArr = Object.keys(this.state.keys);
 
+        let keys = this.state.keys;
+        // this.sortNameArr  用来存放排序的数据的顺序名字  数组
+        this.sortNameArr = Object.keys(this.state.keys);
         let item =  this.sortNameArr.splice(from,1);        
         this.sortNameArr.splice(to,1,item[0]);
-        console.log(this.sortNameArr)
+
+        
+        console.log(this.sortNameArr)   
         let  res = {};
         this.sortNameArr.map(item=>{
             res[item]= keys[item] 
         })
-        this.checkArr = res 
+        // this.checkArr = res 
         this.setState({
             keys: res
         })
@@ -243,7 +285,7 @@ console.log(this.props.langs,sortKeys )
                         }}
                         renderRow={(row) => { return this.renderItems(row) }
                         }
-                    ></SortableListView>
+                    ></SortableListView> 
                 </View>
 
             </View >

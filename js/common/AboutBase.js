@@ -59,7 +59,7 @@ export default class AboutBase {
                 this.updateState({ data: config })
             }
         })
-            .catch(err => {
+            .catch(err => { 
 
             })
     }
