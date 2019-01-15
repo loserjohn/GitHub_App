@@ -19,7 +19,7 @@ import Anticons from 'react-native-vector-icons/AntDesign';
 import { MORE_MENUS } from '../common/MoreMenus'
 import ViewUtil from '../utils/ViewUtil'
 import {LANGUAGE_FLAG} from '../utils/expand/LanguageDao'
-
+import ThemeDialog from '../common/ThemeDialog'  
 
 // import Test from '../common/Test'
 
@@ -70,7 +70,7 @@ class MinePage extends Component {
          break;
       // 自定义主题
       case MORE_MENUS.Custom_Theme:
-          alert(1)
+         this.refs.ThemeModel.dismiss(true)  
          break;
       default:
         break;
@@ -100,7 +100,7 @@ class MinePage extends Component {
     return (
       <View style={styles.container}>
         {navigationBar}
-
+        <ThemeDialog ref="ThemeModel"></ThemeDialog>    
         <ScrollView style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
@@ -140,7 +140,7 @@ class MinePage extends Component {
           {this.renderPanel(MORE_MENUS.About)}
           {/* {this.renderPanel(MORE_MENUS.Sort_Language)} */}
         </ScrollView>
-
+       
       </View>
     );
   }
