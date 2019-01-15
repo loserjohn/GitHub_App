@@ -27,7 +27,7 @@ import LanguageDao from '../utils/expand/LanguageDao'
 
 // import Test from '../common/Test'
 
-
+let currentflag = '';
 
 import NavigationUtil from '../utils/NavigationUtil'
 
@@ -39,6 +39,8 @@ class SortKey extends Component {
         const { flag, isDelect } = this.props.navigation.state.params
         // alert(flag) 
         this.flag = flag
+        currentflag = flag
+        // alert(this.flag)
         let title = flag == LANGUAGE_FLAG.keys ? '标签排序' : '语言排序'
 
         this.checkValue = [] //存放修改记录的
@@ -50,20 +52,35 @@ class SortKey extends Component {
         // this.backPressComponent = new BackPressComponent({backPress:()=>{this.onBackPress()}})
         this.backPressComponent = new BackPressComponent({ backPress: this.onBackPress })
     }
+     // 新版本的生命周期
+    // static getDerivedStateFromProps(nextProps,prevState){
+    //     const newKeys = nextProps.langs[currentflag]
+    //     // debugger
+    //     console.log(666,currentflag, newKeys)     
+    //     if(newKeys){
+    //         return {
+    //             keys:  newKeys 
+    //         }
+    //     }          
+    //     return null    
+    // }
     componentDidMount() {
         const { langs } = this.props
         this.backPressComponent.componentDidMount();
         const languageDao = new LanguageDao(this.flag)
-        // console.log(0,   langs)  
+        console.log(0, langs  ,this.flag,langs[this.flag] )     
         // 标签配置页面
-        if (!langs[this.flag]) {
+        if (!langs[this.flag] ) {
+            // alert(1)
+            console.log('no')     
+            this.props.onRreshLanguage(this.flag);
             languageDao.fetch().then((res) => {
-                // console.log(res)  
-                this.setState({
+                console.log(res)  
+                this.setState({ 
                     // 只显示checked==true的项
                    
                     keys: this.getAllChecked(res)
-                }) 
+                })  
             })
         } else {
 
@@ -90,7 +107,7 @@ class SortKey extends Component {
             }
         })
 
-        return res
+        return this.checkArr
     }
 
     // 返回键处理
@@ -134,7 +151,7 @@ class SortKey extends Component {
 
         let onRreshLanguage = this.props.onRreshLanguage
 
-        let { keys } = this.state; //排序后的数组 是个对象
+        let { keys } = this.state; //排序后的 是个对象
         let defaultKeys = [];
        
         this.props.langs[this.flag].map(item=>{
@@ -145,9 +162,9 @@ class SortKey extends Component {
         // defaultKeys.push(...this.props.langs[this.flag])
         // console.log( 111,this.props.langs[this.flag][0] === defaultKeys[0
         // ])   
-        console.log(0,defaultKeys) 
+        console.log(0,keys,this.sortNameArr)   
 
-        const  sortNameArr = this.sortNameArr   //排完顺序的数组名
+        // const  sortNameArr = this.sortNameArr   //排完顺序的数组名
         const checkArr = this.checkArr  //未排序的所有选中数据
 
         const languageDao = new LanguageDao(this.flag)
@@ -155,26 +172,21 @@ class SortKey extends Component {
 
        
           
-        keys = Object.values(keys)
-        console.log(222,keys)
-        keys.map((item)=>{
-            // if(item)  ; 
-            let k =  defaultKeys.indexOf(item);
-             console.log(item == defaultKeys[ k])    
-            //  defaultKeys[k] = null; 
-            // let n = {...item}   
-            //  defaultKeys[k] = n      
-             defaultKeys.splice(k,1,{...item} )  
-            // defaultKeys.push({...item})   
-            // let k =  defaultKeys.indexOf(item);
-           
-            // for(let i =0;i<sortNameArr.length;i++){
-            //     if(sortNameArr[i] == item.name)
-            //     defaultKeys.splice(k,1,keys[ item.name] )  
-            // }      
-        }) 
-        
-        console.log(2,defaultKeys)   
+        // keys = Object.values(keys)
+        let count = 0
+        defaultKeys.map((item,index)=>{  
+
+            if(item.checked){
+
+                let k = this.sortNameArr.indexOf(item.name);   
+                console.log(k ,keys[k])    
+                // debugger 
+                defaultKeys.splice(index,1,keys[count])  
+                count+=1
+            }
+            
+        })
+        // console.log(2,defaultKeys)    
 
         //     // 配置标签则直接保存
             languageDao.save(defaultKeys);
@@ -204,7 +216,7 @@ class SortKey extends Component {
             // 不存在 添加
             checkValueArr.push(item)
         } else {
-            // 存在 覆盖
+            // 存在 覆盖 
             checkValueArr.splice([checkValueArr.indexOf(item)], 1)
         }
         return checkValueArr
@@ -223,7 +235,7 @@ class SortKey extends Component {
                     ></MaterialCommunityIcons>
                     <View>
                         <Text style={{ textAlign: 'left' }}>
-                            {item.name}
+                            {item.name} 
                         </Text>
                     </View>
                 </View>
@@ -236,22 +248,23 @@ class SortKey extends Component {
         const {to,from,row} = e;
         this.saveCheckValue(row);//储存操作历史
 
-        let keys = this.state.keys;
+        let keys = this.state.keys; //数组
         // this.sortNameArr  用来存放排序的数据的顺序名字  数组
-        this.sortNameArr = Object.keys(this.state.keys);
-        let item =  this.sortNameArr.splice(from,1);        
-        this.sortNameArr.splice(to,1,item[0]);
+       
+        let item =  keys.splice(from,1);    
+        keys.splice(to,0,item[0]); 
 
-        
-        console.log(this.sortNameArr)   
-        let  res = {};
-        this.sortNameArr.map(item=>{
-            res[item]= keys[item] 
+        // let  res = {};
+        this.sortNameArr = [];
+        keys.map(item=>{
+            this.sortNameArr.push(item.name)
         })
-        // this.checkArr = res 
+       
         this.setState({
-            keys: res
+            keys:   keys 
         })
+        
+        // console.log(-1,keys)
     }
     render() {
         let statusBar = {
@@ -269,8 +282,16 @@ class SortKey extends Component {
         />
 
         let data = this.state.keys;
-        // console.log(data)
-        let order = Object.keys(data) //Array of keys
+        // let data = [
+        //     {name:'sda1f1'},
+        //     {name:'sdaf2'},
+        //     {name:'sda33f'},
+        //     {name:'sdaf44'} 
+        // ]; 
+        // let order = Object.keys(data) //Array of keys 
+        let order = []
+        data.map((item,index)=>{
+            order.push(index)       })  
         return (
             <View style={styles.container}>
                 {navigationBar}

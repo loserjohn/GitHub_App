@@ -30,7 +30,7 @@ export default class LanguageDao {
                         if (this.flag == LANGUAGE_FLAG.keys) {
                             this.save(keys)
                             resolve(keys) 
-                        } else {                            
+                        } else {                             
                             this.save(langs) 
                             resolve(langs)
                         }

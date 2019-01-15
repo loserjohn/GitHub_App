@@ -155,7 +155,7 @@ class CustomKey extends Component {
             // if(!langs)return;
             let defalutKey = langs[this.flag]
             // console.log(111,langs) 
-            // debugger 
+            // debugger   
             // 移除标签则做特殊处理
             checkValueArr.map((item,index)=>{
                 let k = defalutKey.indexOf(item)   ;

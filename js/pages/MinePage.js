@@ -68,6 +68,10 @@ class MinePage extends Component {
       case MORE_MENUS.Sort_Language:
          NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages}, 'SortKey') 
          break;
+      // 自定义主题
+      case MORE_MENUS.Custom_Theme:
+          alert(1)
+         break;
       default:
         break;
     }
@@ -137,38 +141,6 @@ class MinePage extends Component {
           {/* {this.renderPanel(MORE_MENUS.Sort_Language)} */}
         </ScrollView>
 
-
-
-
-
-        {/* <Button onPress={() => {
-          this.props.onThemeChange('#096')
-          //  alert(1)
-        }} title="改变主题"></Button>
-
-        <Button onPress={() => {
-          NavigationUtil.navigateTo(this.props, 'FetchDemo')
-          //  alert(1)
-        }} title="fetch"></Button>
-        <Button onPress={() => {
-          NavigationUtil.navigateTo(this.props, 'AsyncStorageDemo')
-          //  alert(1)
-        }} title="AsyncStorage"></Button>
-        <Button onPress={() => {
-          NavigationUtil.navigateTo(this.props, 'DataStoreDemo')
-          //  alert(1)
-        }} title="本地缓存测试"></Button>
-        <Button onPress={() => {
-          this.props.onThemeChange('#fd16a1')
-          //  alert(1)
-        }} title="红色"></Button>
-
-        <Button onPress={() => {
-          this.setState({
-            test: '我变了'
-          })
-        }} title="测试render"></Button>
-        <Test text={this.state.test}></Test> */}
       </View>
     );
   }
