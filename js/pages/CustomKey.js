@@ -31,7 +31,7 @@ import LanguageDao from '../utils/expand/LanguageDao'
 
 import NavigationUtil from '../utils/NavigationUtil'
 
-const THEME_COLOR = "#3697ff"
+
 class CustomKey extends Component {
 
     constructor(props) {
@@ -42,7 +42,7 @@ class CustomKey extends Component {
         let title = flag == LANGUAGE_FLAG.keys ? '自定义标签' : '自定义语言'
         title = isDelect ? '移除标签' : title
         this.isDelect = isDelect
-
+        this.theme = this.props.navigation.state.params.theme
         this.checkValue = [] //存放修改记录的
 
 
@@ -219,9 +219,9 @@ class CustomKey extends Component {
                         }}
                         isChecked={items.checked}
                         leftText={items.name}
-
-                        checkedImage={ViewUtil.getCheckIcon(true)}
-                        unCheckedImage={ViewUtil.getCheckIcon(false)}
+ 
+                        checkedImage={ViewUtil.getCheckIcon( this.theme ,true)}
+                        unCheckedImage={ViewUtil.getCheckIcon( this.theme ,false)}
                     />
                 </View>
             )
@@ -235,14 +235,14 @@ class CustomKey extends Component {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor:  this.theme ,
             barStyle: 'light-content'
         };
         let navigationBar = <NavigationBar
             title={this.state.title}
             statusBar={statusBar}
             style={
-                { backgroundColor: THEME_COLOR, }
+                { backgroundColor:  this.theme , }
             }
             rightButton={this.getRightButton()}
             leftButton={ViewUtil.getLeftBackButton(() => { this.back() })}

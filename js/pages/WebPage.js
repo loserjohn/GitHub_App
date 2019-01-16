@@ -21,7 +21,7 @@ import FavoriteUtils from '../utils/FavoriteUtils'
 
 const baseURL = "https://github.com/"
 
-const THEME_COLOR = "#3697ff"
+// const THEME_COLOR = "#3697ff"
 
 
 
@@ -35,9 +35,9 @@ class WebPage extends Component {
     this.url = url? url:'https://m.imooc.com/' 
 
     const tittle =this.props.navigation.state.params.tittle?this.props.navigation.state.params.tittle: '教程'
-
-
-
+    
+    this.theme = this.props.navigation.state.params.theme
+    // console.log(111,this.theme)
     this.state = {
       title: tittle,
       url: this.url,
@@ -101,7 +101,7 @@ class WebPage extends Component {
 
   render() {
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: this.theme,
       barStyle: 'light-content'
     }
     return (
@@ -112,7 +112,7 @@ class WebPage extends Component {
           leftButton={ViewUtil.getLeftBackButton(() => { this.back() })}
           statusBar={statusBar}
           style={{
-            backgroundColor: THEME_COLOR
+            backgroundColor:  this.theme, 
           }}
         />
 

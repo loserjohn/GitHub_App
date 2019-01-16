@@ -13,13 +13,13 @@ import {
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
 import ViewUtil from '../utils/ViewUtil'
 import NavigationUtil from '../utils/NavigationUtil'
-import BackPressComponent from '../common/BackPressComponent'
+// import BackPressComponent from '../common/BackPressComponent'
 // import config from '../utils/set'
 import GlobalStyles from '../res/styles/GlobalStyles'
 
 
 const window = Dimensions.get('window');
-const THEME_COLOR = "#3697ff"
+// const THEME_COLOR = "#3697ff"
 const AVATAR_SIZE = 90;
 const ROW_HEIGHT = (Platform.OS === 'ios') ? GlobalStyles.nav_bar_height_ios + 20 : GlobalStyles.nav_bar_height_android;;
 const PARALLAX_HEADER_HEIGHT = 220; 
@@ -41,7 +41,7 @@ export default class AboutBase {
         }
         this.updateState = updateState;
         this.navigation = params.navigation
-
+        this.theme = params.navigation.state.params.theme
         // this.backPressComponent = new BackPressComponent({ backPress: this.onBackPress })
 
     }
@@ -64,13 +64,14 @@ export default class AboutBase {
             })
     }
 
-    componentWillUnmount() {
-        // this.backPressComponent.componentWillUnmount()
-    }
-    onBackPress = () => {
-        NavigationUtil.backTo(this.props.navigation)
-        return true
-    };
+    // componentWillUnmount() {
+    //     this.backPressComponent.componentWillUnmount()
+    // }
+    // onBackPress = () => {
+    //     // console.log(666,this.props.navigation)
+    //     NavigationUtil.backTo(this.props.navigation)
+    //     return true
+    // };
 
 
     /**
@@ -152,8 +153,8 @@ export default class AboutBase {
         this.RenderConfig = this.renderParallaxScrollView(params);
         return (
             <ParallaxScrollView
-                headerBackgroundColor={THEME_COLOR}
-                backgroundColor={THEME_COLOR}
+                headerBackgroundColor={ this.theme}
+                backgroundColor={ this.theme}
                 contentBackgroundColor={GlobalStyles.backgroundColor}
                 stickyHeaderHeight={STICKY_HEADER_HEIGHT}
                 parallaxHeaderHeight={PARALLAX_HEADER_HEIGHT}

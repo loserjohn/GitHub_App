@@ -31,8 +31,7 @@ let currentflag = '';
 
 import NavigationUtil from '../utils/NavigationUtil'
 
-const THEME_COLOR = "#3697ff"
-class SortKey extends Component {
+class SortKey extends Component { 
 
     constructor(props) {
         super(props);
@@ -44,7 +43,7 @@ class SortKey extends Component {
         let title = flag == LANGUAGE_FLAG.keys ? '标签排序' : '语言排序'
 
         this.checkValue = [] //存放修改记录的
-
+        this.theme = this.props.navigation.state.params.theme
         this.state = {
             keys: [],
             title: title
@@ -52,18 +51,7 @@ class SortKey extends Component {
         // this.backPressComponent = new BackPressComponent({backPress:()=>{this.onBackPress()}})
         this.backPressComponent = new BackPressComponent({ backPress: this.onBackPress })
     }
-     // 新版本的生命周期
-    // static getDerivedStateFromProps(nextProps,prevState){
-    //     const newKeys = nextProps.langs[currentflag]
-    //     // debugger
-    //     console.log(666,currentflag, newKeys)     
-    //     if(newKeys){
-    //         return {
-    //             keys:  newKeys 
-    //         }
-    //     }          
-    //     return null    
-    // }
+
     componentDidMount() {
         const { langs } = this.props
         this.backPressComponent.componentDidMount();
@@ -231,7 +219,7 @@ class SortKey extends Component {
                     <MaterialCommunityIcons
                         name={'sort'}
                         size={16}
-                        style={{ color: THEME_COLOR }}
+                        style={{ color:  this.theme  }}
                     ></MaterialCommunityIcons>
                     <View>
                         <Text style={{ textAlign: 'left' }}>
@@ -268,14 +256,14 @@ class SortKey extends Component {
     }
     render() {
         let statusBar = {
-            backgroundColor: THEME_COLOR,
+            backgroundColor:  this.theme ,
             barStyle: 'light-content'
         };
         let navigationBar = <NavigationBar
             title={this.state.title}
             statusBar={statusBar}
             style={
-                { backgroundColor: THEME_COLOR, }
+                { backgroundColor:  this.theme , }
             }
             rightButton={this.getRightButton()}
             leftButton={ViewUtil.getLeftBackButton(() => { this.back() })}

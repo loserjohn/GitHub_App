@@ -103,12 +103,15 @@ class Tab extends Component {
 
   _renderItem(data) {
     const item = data;
+    const {theme} = this.props
+    // console.log(theme)
     // debugger 
     return <TrendingItem
       projectModel={item}
-      onSelect={() => {
+      theme = {theme} 
+      onSelect={() => { 
         NavigationUtil.navigateTo({
-          projectModel: data, favoriteDao: favoriteDao, flag: flag, callback: (isFavorite) => {
+          projectModel: data, favoriteDao: favoriteDao, flag: flag,theme:theme, callback: (isFavorite) => {
             // alert(1)
             data.isFavorite = isFavorite
           }
@@ -188,7 +191,8 @@ class Tab extends Component {
 
 const mapStateToProps = state => ({
   nav: state.nav,
-  trending: state.trending
+  trending: state.trending,
+  theme:state.theme.theme
 })
 const mapDipacthToProps = dispacth => ({
   onRefreshTrending: (labelType, url, pageSize) => {
@@ -283,8 +287,9 @@ class TrendingPage extends Component {
     ></TrendingDialog>
   }
   render() {
+    const {theme } = this.props
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme,
       barStyle: 'light-content'
     }
     let navigationBar = <NavigationBar
@@ -294,7 +299,7 @@ class TrendingPage extends Component {
       }
       statusBar={statusBar}
       style={{
-        backgroundColor: THEME_COLOR
+        backgroundColor: theme
       }}
     />
     const Tabs =this.props.langs &&  this.initTab()
@@ -310,12 +315,12 @@ class TrendingPage extends Component {
             // width: 100,
           },
           style: {
-            backgroundColor: '#3697ff',
+            backgroundColor: theme,
             height: 40,
             overflow: 'hidden'
           },
           indicatorStyle: {
-            backgroundColor: '#b9d1ff'
+            backgroundColor: '#fff'
           },
           scrollEnabled: true
         },
@@ -334,7 +339,8 @@ class TrendingPage extends Component {
   }
 }
 const mapTrendingStateToProps = state => ({
-  langs: state.langs[LANGUAGE_FLAG.languages]
+  langs: state.langs[LANGUAGE_FLAG.languages],
+  theme:state.theme.theme,
 })
 
 const mapTrendingDipacthToProps = dispacth => ({

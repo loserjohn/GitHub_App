@@ -18,7 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import NavigationUtil from '../utils/NavigationUtil'
 const width = Dimensions.get("window").width;
 export const FLAG_ABOUT = { flag_about: 'about', flag_about_me: 'about_me' }
-const THEME_COLOR = "#3697ff"
+// const THEME_COLOR = "#3697ff" 
 
 export default class AboutAuthor extends Component {
 
@@ -32,6 +32,8 @@ export default class AboutAuthor extends Component {
             showContact: false,
         }
         this.params = this.props.navigation.state.params;
+        this.theme = this.props.navigation.state.params.theme
+        
         this.aboutCommon = new AboutBase({
             ...this.params,
             navigation: this.props.navigation,
@@ -42,8 +44,8 @@ export default class AboutAuthor extends Component {
         // }
     }
     componentWillMount() {
-
-        console.log(this.state.data)
+        // console.log(  this.props )
+        // console.log(this.state.data)
         // console.log(Obejct.keys(r))
 
     }
@@ -80,7 +82,7 @@ export default class AboutAuthor extends Component {
         // let type = ;
         if(sub.url){
             // 链接操作
-            NavigationUtil.navigateTo({url:sub.url}, 'WebPage')
+            NavigationUtil.navigateTo({url:sub.url,theme:this.theme}, 'WebPage')
         }else{
             // 账号复制操作  
             // alert(1)
@@ -90,7 +92,7 @@ export default class AboutAuthor extends Component {
     }
     // 渲染选项
     renderPanel(item, mark) {
-        const color = THEME_COLOR
+        const color = this.theme
         return ViewUtil.getMenuItem(() => { this.onClick(item) }, item, color, false)
     }
     subItems(item, mark) {
@@ -103,7 +105,7 @@ export default class AboutAuthor extends Component {
                 {
                     ViewUtil.getSettingItem(() => {
                         this.onHandler(it)
-                    },title , THEME_COLOR)
+                    },title , this.theme)
                 }
             </View>
 
@@ -139,7 +141,7 @@ export default class AboutAuthor extends Component {
             this.setState({
                 [key]: !this.state[key]
             })
-        }, menu.name, THEME_COLOR, Ionicons, menu.icon, isShow ? 'chevron-up' : 'chevron-down')
+        }, menu.name, this.theme, Ionicons, menu.icon, isShow ? 'chevron-up' : 'chevron-down')
     }
     render() {
         const content = this.renderContentView()

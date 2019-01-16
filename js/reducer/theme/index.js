@@ -5,7 +5,8 @@ const initState ={
 }
 
 const theme = (state = initState, action) => {
-//    console.log(3333,action.type)
+//    console.log(3333,action)   
+// debugger
     // 判断 action 类型
     switch (action.type) {
         case Types.THEME_CHANGE:
@@ -13,7 +14,7 @@ const theme = (state = initState, action) => {
         return {
             ...state, 
             theme:action.theme
-        };
+        }; 
  
         default:
             return state

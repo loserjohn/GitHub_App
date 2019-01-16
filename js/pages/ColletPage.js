@@ -41,13 +41,14 @@ class CollectItem extends Component {
   }
   render() {
     const item = this.props.projectModel
-    // console.log(666,this.props )
+    const {theme} = this.props
     const tabitems = this.type == 'popular' ?
       <PopularItem
         projectModel={item}
+        theme = {theme} 
         onSelect={() => {
           NavigationUtil.navigateTo({
-            projectModel: item, favoriteDao: favoriteDao_p, flag: this.type, callback: (isFavorite) => {
+            projectModel: item, favoriteDao: favoriteDao_p, flag: this.type,theme:theme, callback: (isFavorite) => {
               // alert(1)
               item.isFavorite = isFavorite
             }
@@ -61,9 +62,10 @@ class CollectItem extends Component {
       ></PopularItem> :
       <TrendingItem
         projectModel={item}
+        theme = {theme} 
         onSelect={() => {
           NavigationUtil.navigateTo({
-            projectModel: item, favoriteDao: favoriteDao_t, flag: this.type, callback: (isFavorite) => {
+            projectModel: item, favoriteDao: favoriteDao_t, flag: this.type, theme:theme,callback: (isFavorite) => {
               // alert(1)
               item.isFavorite = isFavorite
             }
@@ -133,10 +135,11 @@ class Tab extends Component {
 
   _renderItem(data) {
     const item = data; 
-
+    const {theme} = this.props 
     return <CollectItem
       projectModel={item}
       storeName={this.flag}
+      theme = {theme} 
     ></CollectItem>
     // return <Text>dfsadsfdas </Text>
 
@@ -152,7 +155,7 @@ class Tab extends Component {
   }
   render() {
     let store = this._store()
-    // console.log(store)
+    
     return (
       <View style={styles.container}>
         <FlatList
@@ -203,7 +206,8 @@ class Tab extends Component {
 
 const mapStateToProps = state => ({
   nav: state.nav,
-  collect: state.collect
+  collect: state.collect,
+  theme:state.theme.theme
 })
 const mapDipacthToProps = dispacth => ({
   onFetchCollect: (storeName) => {
@@ -242,15 +246,16 @@ class Collect extends Component {
     return Tabs
   }
   render() {
+    const {theme} = this.props
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme, 
       barStyle: 'light-content'
     }
     let navigationBar = <NavigationBar
       title={'收藏'}
       statusBar={statusBar}
       style={{
-        backgroundColor: THEME_COLOR
+        backgroundColor: theme
       }}
     />
     const Tabs = this.initTab()
@@ -264,12 +269,12 @@ class Collect extends Component {
           // width: 100,
         },
         style: {
-          backgroundColor: '#3697ff',
+          backgroundColor: theme, 
           height: 40,
           overflow: 'hidden'
         },
         indicatorStyle: {
-          backgroundColor: '#b9d1ff'
+          backgroundColor: '#fff'
         },
         scrollEnabled: true
       },
@@ -284,8 +289,11 @@ class Collect extends Component {
   }
 }
 
+const mapCollectStateToProps = state => ({
+  theme:state.theme.theme,
+})
 
-export default connect()(Collect)
+export default connect(mapCollectStateToProps)(Collect)
 
 
 const styles = StyleSheet.create({

@@ -21,7 +21,7 @@ import FavoriteUtils from '../utils/FavoriteUtils'
 
 const baseURL = "https://github.com/"
 
-const THEME_COLOR = "#3697ff"
+ 
 class Detail extends Component {
   constructor(props) {
     super(props);
@@ -97,7 +97,7 @@ class Detail extends Component {
     })
   }
   back() {
-    console.log('detail里面的回调')
+    // console.log('detail里面的回调')
     if (this.state.canGoBack) {
       this.webView.goBack()
     } else {
@@ -106,8 +106,9 @@ class Detail extends Component {
   }
 
   render() {
+    const {theme } = this.props.navigation.state.params
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme,
       barStyle: 'light-content'
     }
     // console.log(this.state.source)
@@ -120,7 +121,7 @@ class Detail extends Component {
           rightButton={this.renderRightButton()}
           statusBar={statusBar}
           style={{
-            backgroundColor: THEME_COLOR
+            backgroundColor: theme
           }}
         />
 

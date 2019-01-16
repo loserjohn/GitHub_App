@@ -19,15 +19,15 @@ import Anticons from 'react-native-vector-icons/AntDesign';
 import { MORE_MENUS } from '../common/MoreMenus'
 import ViewUtil from '../utils/ViewUtil'
 import {LANGUAGE_FLAG} from '../utils/expand/LanguageDao'
-import ThemeDialog from '../common/ThemeDialog'  
-
+import ThemeDialog from '../common/ThemeDialog'   
+// import ThemeDao from '../utils/expand/ThemeDao'  
 // import Test from '../common/Test'
 
 
-
+// const themeDao = new ThemeDao()
 import NavigationUtil from '../utils/NavigationUtil'
 
-const THEME_COLOR = "#3697ff"
+// const THEME_COLOR = "#3697ff"  
 class MinePage extends Component {
   constructor(props) {
 
@@ -40,37 +40,39 @@ class MinePage extends Component {
   }
   onClick(item) {
     let RouteName, params = {}
+    const {theme} = this.props  
+    // debugger   
     switch (item) {
       case MORE_MENUS.Tutorial:
-        NavigationUtil.navigateTo({}, 'WebPage')
+        NavigationUtil.navigateTo({theme:theme}, 'WebPage')
         break;
       case MORE_MENUS.About_Auther:
-        NavigationUtil.navigateTo({}, 'AboutAuthor')
+        NavigationUtil.navigateTo({theme:theme}, 'AboutAuthor') 
         break;
       case MORE_MENUS.About:
-        NavigationUtil.navigateTo({}, 'AboutPage') 
+        NavigationUtil.navigateTo({theme:theme}, 'AboutPage')  
         break;
       case MORE_MENUS.Custom_Key:
-        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys,isDelect:false}, 'CustomKey') 
+        NavigationUtil.navigateTo({theme:theme,flag:LANGUAGE_FLAG.keys,isDelect:false}, 'CustomKey') 
         break;
       case MORE_MENUS.Custom_Language:
-        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages,isDelect:false}, 'CustomKey') 
+        NavigationUtil.navigateTo({theme:theme,flag:LANGUAGE_FLAG.languages,isDelect:false}, 'CustomKey') 
         break;
         // 移除标签
       case MORE_MENUS.Remove_Key:
-        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys,isDelect:true}, 'CustomKey') 
+        NavigationUtil.navigateTo({theme:theme,flag:LANGUAGE_FLAG.keys,isDelect:true}, 'CustomKey') 
         break;
         // 排序标签
       case MORE_MENUS.Sort_Key: 
-        NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.keys}, 'SortKey') 
+        NavigationUtil.navigateTo({theme:theme,flag:LANGUAGE_FLAG.keys}, 'SortKey') 
         break;
       // 语言标签
       case MORE_MENUS.Sort_Language:
-         NavigationUtil.navigateTo({flag:LANGUAGE_FLAG.languages}, 'SortKey') 
+         NavigationUtil.navigateTo({theme:theme,flag:LANGUAGE_FLAG.languages}, 'SortKey') 
          break;
       // 自定义主题
       case MORE_MENUS.Custom_Theme:
-         this.refs.ThemeModel.dismiss(true)  
+         this.refs.thememodel.dismiss(true)  
          break;
       default:
         break;
@@ -78,20 +80,22 @@ class MinePage extends Component {
 
   }
   renderPanel(item) {
-    const color = THEME_COLOR
-    return ViewUtil.getMenuItem(() => { this.onClick(item) }, item, color, false)
+    const {theme} = this.props
+    return ViewUtil.getMenuItem(() => { this.onClick(item) }, item, theme, false)
     // return  <Text>VDGDFGGFDS</Text> 
   }
   render() {
+    const {theme} = this.props
+    console.log('theme',theme)
     let statusBar = {
-      backgroundColor: THEME_COLOR,
+      backgroundColor: theme, 
       barStyle: 'light-content'
     };
     let navigationBar = <NavigationBar
       title={'我的'}
       statusBar={statusBar}
       style={
-        { backgroundColor: THEME_COLOR, }
+        { backgroundColor: theme, } 
       }
     // rightButton={this.getRightButton()}
     // leftButton={this.getLeftButton()}
@@ -100,11 +104,11 @@ class MinePage extends Component {
     return (
       <View style={styles.container}>
         {navigationBar}
-        <ThemeDialog ref="ThemeModel"></ThemeDialog>    
+        <ThemeDialog ref="thememodel"></ThemeDialog>    
         <ScrollView style={{ flex: 1 }}>
           <TouchableOpacity
             onPress={() => {
-              NavigationUtil.navigateTo({}, 'AboutPage')
+              NavigationUtil.navigateTo({theme:theme}, 'AboutPage')
             }}
           >
             <View style={styles.row}>
@@ -117,7 +121,7 @@ class MinePage extends Component {
               <Feather
                 name={'chevron-right'}
                 size={16} 
-                style={{ color: THEME_COLOR?THEME_COLOR:'#d3d3d3' }}
+                style={{ color: theme?theme:'#d3d3d3' }}
               ></Feather>
             </View>
 
@@ -145,11 +149,13 @@ class MinePage extends Component {
     );
   }
 }
-const mapStateToProps = state => ({})
-const mapDispatchToProps = dispatch => ({
-  onThemeChange: theme => dispatch(actions.onThemeChange(theme))
+const mapStateToProps = state => ({
+  theme:state.theme.theme
 })
-export default connect(mapStateToProps, mapDispatchToProps)(MinePage)
+// const mapDispatchToProps = dispatch => ({
+//   onThemeChange: theme => dispatch(actions.onThemeChange(theme))
+// })
+export default connect(mapStateToProps)(MinePage)
 const styles = StyleSheet.create({
   container: {
     flex: 1,

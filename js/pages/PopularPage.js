@@ -29,7 +29,6 @@ let tabs = []
 const favoriteDao = new FavoriteDao(FLAG_STORE.flag_popular)
 
 const pageSize = 10
-const THEME_COLOR = "#3697ff" 
 const flag = FLAG_STORE.flag_popular
 
 
@@ -94,10 +93,13 @@ class Tab extends Component {
 
   _renderItem(data) {
     const item = data; 
+    const {theme} = this.props
     return <PopularItem
       projectModel={item}
+      theme = {theme}  
       onSelect={() => {
-        NavigationUtil.navigateTo({projectModel:data,favoriteDao:favoriteDao,flag:flag,callback:(isFavorite)=>{
+    
+        NavigationUtil.navigateTo({projectModel:data,favoriteDao:favoriteDao,flag:flag,theme:theme,callback:(isFavorite)=>{
           // alert(1)
           data.isFavorite = isFavorite 
         }},'Detail',) 
@@ -167,14 +169,15 @@ class Tab extends Component {
           position='center'
           opacity={0.8}
         />
-      </View>
+      </View> 
     )
   }
 }
 
 const mapStateToProps = state => ({
   nav: state.nav,
-  popular: state.popular
+  popular: state.popular,
+  theme:state.theme.theme
 })
 const mapDipacthToProps = dispacth => ({
   onFetchData: (labelType,url,pageSize) => { 
@@ -186,7 +189,7 @@ const mapDipacthToProps = dispacth => ({
   }
 })
 
-const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
+const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)   
 
 
 
@@ -199,9 +202,8 @@ class PopularPage extends Component {
 
 
   initTab() {
-   const {langs} = this.props
+   const {langs,theme} = this.props
     const Tabs = {}
- 
  
       tabs = langs 
       // console.log('langs',tabs)    
@@ -210,7 +212,7 @@ class PopularPage extends Component {
       if(item.checked){
         Tabs[item.name] = {
           screen: props => { return (
-            <PopularTab {...props} storeName={item.name} />  
+            <PopularTab {...props} storeName={item.name}  theme={theme}/>  
             ) },
           navigationOptions: {
             storeName: item.name,
@@ -223,15 +225,17 @@ class PopularPage extends Component {
     return Tabs
   }
   render() {
+    const {theme} = this.props
+    globaltheme = theme
     let statusBar = {
-      backgroundColor:THEME_COLOR,
+      backgroundColor:theme,
       barStyle:'light-content'
     }
     let navigationBar = <NavigationBar 
       title={'最热'}
       statusBar = {statusBar}
       style={{
-        backgroundColor:THEME_COLOR
+        backgroundColor:theme
       }}
     />
     // console.log(this.props.langs) 
@@ -245,7 +249,7 @@ class PopularPage extends Component {
       //     return <Text>dasf </Text> 
       //   } ,
       tabBarOptions: {
-        activeTintColor :'#3697ff', 
+        activeTintColor :theme, 
         labelStyle: {
           fontSize: 12,
           color:'#757575' 
@@ -268,7 +272,7 @@ class PopularPage extends Component {
         },
         indicatorStyle: {
           // height:4,
-          backgroundColor: '#3697ff'
+          backgroundColor: theme
         },
         scrollEnabled: true
       },
@@ -283,7 +287,8 @@ class PopularPage extends Component {
   }
 }
 const mapPopularStateToProps = state => ({
-  langs: state.langs[LANGUAGE_FLAG.keys]  
+  langs: state.langs[LANGUAGE_FLAG.keys]  ,
+  theme:state.theme.theme,
 }) 
 
 const mapPopularDipacthToProps = dispacth => ({

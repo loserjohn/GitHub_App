@@ -21,7 +21,8 @@ export default  class BaseItem extends Component {
     constructor(props){
         super(props)
         this.state = {
-            isFavorite: this.props.projectModel.isFavorite 
+            isFavorite: this.props.projectModel.isFavorite ,
+            theme: this.props.theme
         } 
     }
     // 新版本的生命周期
@@ -51,6 +52,7 @@ export default  class BaseItem extends Component {
     }
     // 生成收藏按钮图标
     _favoriteicon(){
+        const {theme} =  this.props
         return <TouchableOpacity
             style={{padding: 6}}
             underlayColor = 'transparent'
@@ -59,7 +61,7 @@ export default  class BaseItem extends Component {
             <FontAwesome
                 name = {this.state.isFavorite ? 'star':'star-o'}
                 size={20}
-                style ={{color:'#678'}}
+                style ={{color:theme}}
             ></FontAwesome>
             {/* <Text>{ JSON.stringify(this.state.isFavorite)  }</Text> */}
         </TouchableOpacity>

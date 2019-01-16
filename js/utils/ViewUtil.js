@@ -70,13 +70,13 @@ export default class ViewUtil {
     }
 
     // 选中图标
-    static getCheckIcon(bool){
+    static getCheckIcon(color,bool){
         return <Ionicons
         name={bool?'ios-checkbox':'ios-checkbox-outline'}
         size={20}
-        style={{ color: bool?'#3697ff':'#d3d3d3', opacity: 0.9, marginRight: 10 }}
+        style={{ color: bool?color:'#d3d3d3', opacity: 0.9, marginRight: 10 }} 
     ></Ionicons>
- 
+  
     }
 }
 
