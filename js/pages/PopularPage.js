@@ -7,7 +7,7 @@
  */
 import Toast, { DURATION } from 'react-native-easy-toast'
 import React, { Component } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl,DeviceInfo } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, FlatList, RefreshControl,DeviceInfo,TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator, } from 'react-navigation';
 import actions from '../actions/index'
 // import DataStore from '../utils/DataStore'
@@ -15,6 +15,7 @@ import actions from '../actions/index'
 import NavigationBar from '../common/NavigationBar'
 import NavigationUtil from '../utils/NavigationUtil'
 import { connect } from 'react-redux';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import PopularItem from '../common/PopularItem'
 import FavoriteDao from '../utils/expand/FavoriteDao'
@@ -51,7 +52,7 @@ class Tab extends Component {
       }
     })
   }
-
+ 
   componentWillUnmount(){
     EventBus.getInstance().removeListener(this.listener)
   }
@@ -208,7 +209,7 @@ class PopularPage extends Component {
       tabs = langs 
       // console.log('langs',tabs)    
    
-    tabs.forEach((item, index) => {
+    tabs.forEach((item, index) => { 
       if(item.checked){
         Tabs[item.name] = {
           screen: props => { return (
@@ -224,6 +225,25 @@ class PopularPage extends Component {
     })
     return Tabs
   }
+  renderRightButton(){
+    return <View style={{ flexDirection: 'row' }}>
+    <TouchableOpacity
+      onPress={() => {
+          NavigationUtil.navigateTo({},'Search')  
+      }}
+      underlayColor="transparent"
+    >
+      <FontAwesome
+        // name={'star-o'}
+        name={'search'}
+        size={16}
+        style={{ color: 'white', marginRight: 10 }}
+      >
+
+      </FontAwesome>
+    </TouchableOpacity>
+  </View>
+  }
   render() {
     const {theme} = this.props
     globaltheme = theme
@@ -234,6 +254,7 @@ class PopularPage extends Component {
     let navigationBar = <NavigationBar 
       title={'最热'}
       statusBar = {statusBar}
+      rightButton={this.renderRightButton()}
       style={{
         backgroundColor:theme
       }}

@@ -4,7 +4,7 @@ import { onRefreshTrending,onLoadMoreTrending} from './trending'
 import { onFetchCollect} from './collect'
 import { onRreshLanguage} from './langs'
 import { onSelectTheme,onInitTheme} from './theme'
-
+import { onSearchData,onSearchCancel,onLoadMoreSearch} from './search'
 
 export default {
     onThemeChange,
@@ -15,5 +15,8 @@ export default {
     onFetchCollect,
     onRreshLanguage,
     onSelectTheme,
-    onInitTheme
+    onInitTheme,
+    onSearchData,
+    onSearchCancel,
+    onLoadMoreSearch
 }

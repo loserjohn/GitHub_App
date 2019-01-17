@@ -9,4 +9,12 @@ export default class Utils {
         }
         return false
     }
+
+    static ArrayRemove(arr,key){
+        arr.map((item,index)=>{
+            if(item == key){
+                arr.splice(index,1)
+            }   
+        })
+    }
 }

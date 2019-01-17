@@ -13,7 +13,7 @@ import AboutAuthor from './pages/AboutAuthor'
 import AboutPage from './pages/AboutPage'
 import CustomKey from './pages/CustomKey'
 import SortKey from './pages/SortKey'
-
+import Search from './pages/SearchPage'
 // import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import MIcon from 'react-native-vector-icons/MaterialIcons';
 
@@ -122,6 +122,16 @@ const Main = createStackNavigator({
     },
     SortKey:{ 
         screen: SortKey,
+        navigationOptions:{
+            headerTitle:'排序',
+            header:null,
+            headerTitleStyle:{
+                fontSize:16
+            }
+        }
+    },
+    Search:{ 
+        screen: Search,
         navigationOptions:{
             headerTitle:'排序',
             header:null,

@@ -1,7 +1,8 @@
 import Utils from '../utils/Utils'
 import ProjectModels from '../model/ProjectModel'
-
+ 
 export function handleData(actionType,dispatch, storeName, data, pageSize,favoriteDao) {
+    // debugger
     let fixItem = [];
     if (data && data.data ) {
         if(Array.isArray(data.data)){
@@ -10,10 +11,10 @@ export function handleData(actionType,dispatch, storeName, data, pageSize,favori
             fixItem = data.data.items  
         }       
     }
-    
+    console.log(3,data)    
     let showItems =  pageSize > fixItem.length ? fixItem : fixItem.slice(0, pageSize)
     _projectModules(showItems,favoriteDao, projectModels=>{
-        // console.log(projectModels)  
+       
         dispatch({
             type: actionType,
             storeName: storeName,
@@ -21,9 +22,9 @@ export function handleData(actionType,dispatch, storeName, data, pageSize,favori
             pageIndex: 1,
             projectModels:projectModels
         })
-    })
+    }) 
 
-    
+     
 }
 export async function _projectModules(showItems,favoriteDao,callback){
     let keys = [];
@@ -37,10 +38,17 @@ export async function _projectModules(showItems,favoriteDao,callback){
         projectModels.push(new ProjectModels(showItems[i],Utils.checkFavorite(showItems[i],keys)))
     }
     // debugger
-    if(typeof(callback)  === 'function'){  
-        callback(projectModels)
+    if(callback){
+        doCallback(callback,projectModels)
     }
+   
     // console.log(projectModels)
     // return projectModels 
    
+}
+
+export  function doCallback(callback,object){  
+    if(callback && typeof callback === 'function'){
+        callback(object)
+    }
 }

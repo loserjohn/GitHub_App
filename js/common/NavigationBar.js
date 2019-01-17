@@ -17,7 +17,7 @@ const StatusBarShape = {
 export default class NavigationBar extends Component{
 
     static propTypes = {
-        style:PropsTypes.object, 
+        style:PropsTypes.object,  
         title:PropsTypes.string,
         titleView:PropsTypes.element,
         titleLayoutStyle:PropsTypes.object,
@@ -41,7 +41,7 @@ export default class NavigationBar extends Component{
             <StatusBar {...this.props.statusBar}></StatusBar>
         </View>:null
 
-        let titleView = this.props.titleView?this.props.titleView:
+        let titleView = this.props.titleView?this.props.titleView: 
         <Text ellipsizeMode = 'tail' numberOfLines={1} style={styles.title}>{this.props.title}</Text>
 
         let content = this.props.hide?null:
