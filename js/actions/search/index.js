@@ -12,9 +12,9 @@ export function onSearchData(keyWord,token,pageSize,favoriteDao,popularKeys,call
     debugger 
     return (dispatch)=>{
         dispatch({type:Types.SEARCH_FRESH})  
-       console.log(url)
+    //    console.log(url)
         fetch(url).then(response=>{       
-            console.log(0,res)
+            // console.log(0,response)
             // 判断是否取消请求
             if(hasCancel(token,true)){               
                 return null
@@ -22,14 +22,14 @@ export function onSearchData(keyWord,token,pageSize,favoriteDao,popularKeys,call
                 // 没有取消  则继续操作            
                 return response.json()   
             }
-            // return response.json()  
         }).then(res=>{
            
             // 二次判断
             if(hasCancel(token,false)){
                 return null
             }else{
-                if(!res|| !res.items || res.item.length===0){
+                // debugger
+                if(!res|| !res.items || res.items.length===0){                 
                     dispatch({
                         type:Types.SEARCH_FRESH_ERROR,
                         message:`没有找到${keyWord}相关的项目`
@@ -53,7 +53,7 @@ export function onSearchData(keyWord,token,pageSize,favoriteDao,popularKeys,call
 
 // 判断是否取消对列中
 function hasCancel(token,bool){
-    debugger
+    // debugger
    if(CancelArray.includes(token)){
     //    在取消的队列中
     Utils.ArrayRemove(CancelArray,token);

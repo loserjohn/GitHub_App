@@ -42,94 +42,92 @@ class Tab extends Component {
       switchFavorite: false
     }
   }
-  // componentWillMount() {
-  //   // this._loadData()
-  //   EventBus.getInstance().addListener(Event.popular_favorite, (data) => {
-  //     this.setState({ switchFavorite: true })
-  //   })
-  //   EventBus.getInstance().addListener(Event.bottom_select, this.listener = (data) => {
-  //     if (data.to === 0 && this.state.switchFavorite) {
-  //       this._loadData()
-  //     }
-  //   })
-  // }
+  componentWillMount() {
+    // this._loadData()
+    EventBus.getInstance().addListener(Event.popular_favorite, (data) => {
+      this.setState({ switchFavorite: true })
+    })
+    EventBus.getInstance().addListener(Event.bottom_select, this.listener = (data) => {
+      if (data.to === 0 && this.state.switchFavorite) {
+        this._loadData()
+      }
+    })
+  }
 
-  // componentWillUnmount() {
-  //   EventBus.getInstance().removeListener(this.listener)
-  // }
-  // _loadData(loadmore) {
-  //   const { onSearchData, onSearchCancel, onLoadMoreSearch,storeName } = this.props;
-  //   const url = this._getUrl(storeName)
-  //   const store = this._store()
-  //   // console.log('tab', storeName)
-  //   if (loadmore) {
-  //     onLoadMoreSearch(storeName, store.pageIndex + 1, pageSize, store.items, (res) => {
-  //       this.refs.toast.show(res);
-  //     }, favoriteDao)
+  componentWillUnmount() {
+    EventBus.getInstance().removeListener(this.listener)
+  }
+  _loadData(loadmore) {
+    const { onSearchData, onSearchCancel, onLoadMoreSearch,storeName } = this.props;
+    const url = this._getUrl(storeName)
+    const store = this._store()
+    // console.log('tab', storeName)
+    if (loadmore) {
+      onLoadMoreSearch(storeName, store.pageIndex + 1, pageSize, store.items, (res) => {
+        this.refs.toast.show(res);
+      }, favoriteDao)
 
-  //   } else {
-  //     const keyWord = 'java'
-  //     onSearchData(keyWord, this.token = new Date() , pageSize, favoriteDao)
-  //   }
+    } else {
+      const keyWord = 'java'
+      onSearchData(keyWord, this.token = new Date() , pageSize, favoriteDao)
+    }
 
-  // }
-  // _getUrl(key) {
-  //   return URL + key + '&sort=stars'
-  // }
-  // _store() {
-  //   const { popular, storeName } = this.props
-  //   // debugger  
-  //   let store = popular[storeName]
+  }
+  _getUrl(key) {
+    return URL + key + '&sort=stars'
+  }
+  _store() {
+    const { search } = this.props
+    let store = search
 
-  //   if (!store) {
-  //     store = {
-  //       items: [],
-  //       isloading: false,
-  //       // pageIndex:1,
-  //       projectModels: [],  //要显示的数据
-  //       hideLoadingMore: true //默认隐藏加载更多 
-  //     }
-  //   }
-  //   // console.log(0,store) 
-  //   return store
-  // }
+    if (!store) {
+      store = {
+        items: [],
+        isloading: false,
+        // pageIndex:1,
+        projectModels: [],  //要显示的数据
+        hideLoadingMore: true //默认隐藏加载更多 
+      }
+    }
+    return store
+  }
 
-  // _renderItem(data) {
-  //   const item = data;
-  //   const { theme } = this.props
-  //   return <PopularItem
-  //     projectModel={item}
-  //     theme={theme}
-  //     onSelect={() => {
+  _renderItem(data) {
+    const item = data;
+    const { theme } = this.props
+    return <PopularItem
+      projectModel={item}
+      theme={theme}
+      onSelect={() => {
 
-  //       NavigationUtil.navigateTo({
-  //         projectModel: data, favoriteDao: favoriteDao, flag: flag, theme: theme, callback: (isFavorite) => {
-  //           // alert(1)
-  //           data.isFavorite = isFavorite
-  //         }
-  //       }, 'Detail')
-  //     }}
-  //     // projectModel={data}
-  //     onFavorite={(item, isFavorite) => {
+        NavigationUtil.navigateTo({
+          projectModel: data, favoriteDao: favoriteDao, flag: flag, theme: theme, callback: (isFavorite) => {
+            // alert(1)
+            data.isFavorite = isFavorite
+          }
+        }, 'Detail')
+      }}
+      // projectModel={data}
+      onFavorite={(item, isFavorite) => {
 
-  //       FavoriteUtils.onFavorite(favoriteDao, item, isFavorite, flag)
-  //     }}
-  //   ></PopularItem>
+        FavoriteUtils.onFavorite(favoriteDao, item, isFavorite, flag)
+      }}
+    ></PopularItem>
 
-  // }
-  // _getIndicator() {
-  //   return this._store().hideLoadingMore === true ? null :
-  //     <View style={styles.nomore}>
-  //       <ActivityIndicator size="small" color="#d3d3d3" />
-  //     </View>
+  }
+  _getIndicator() {
+    return this._store().hideLoadingMore === true ? null :
+      <View style={styles.nomore}>
+        <ActivityIndicator size="small" color="#d3d3d3" />
+      </View>
 
-  // }
+  }
   render() {
-    // let store = this._store()
+    let store = this._store()
     return (
       <View style={styles.container}>
-        {/* <FlatList
-          data={store.projectModels}
+        <FlatList
+          data={store.projectModels}  
           renderItem={({ item }) => {
             return (
               this._renderItem(item)
@@ -165,7 +163,7 @@ class Tab extends Component {
           onMomentumScrollBegin={() => {
             this.canLoadMore = true;
           }}
-        ></FlatList> */}
+        ></FlatList>
         <Text>dsfadsfds sdf </Text>
         <Toast
           ref="toast"
@@ -182,13 +180,13 @@ const mapStateToProps = state => ({
   theme: state.theme.theme
 })
 const mapDipacthToProps = dispacth => ({
-  // onSearchData: (keyWord, token,storeName, pageSize, favoriteDao) => {
-  //   // console.log(labelType,url,pageSize)
-  //   dispacth(actions.onSearchData(keyWord, token,storeName, pageSize, favoriteDao))
-  // },
-  // onLoadMoreSearch: (labelType, pageIndex, pageSize, dataArray, callback, favoriteDao) => {
-  //   dispacth(actions.onLoadMorePopular(labelType, pageIndex, pageSize, dataArray, callback, favoriteDao))
-  // } 
+  onSearchData: (keyWord, token,storeName, pageSize, favoriteDao) => {
+    // console.log(labelType,url,pageSize)
+    dispacth(actions.onSearchData(keyWord, token,storeName, pageSize, favoriteDao))
+  },
+  onLoadMoreSearch: (labelType, pageIndex, pageSize, dataArray, callback, favoriteDao) => {
+    dispacth(actions.onLoadMorePopular(labelType, pageIndex, pageSize, dataArray, callback, favoriteDao))
+  } 
 })
 
 const PopularTab = connect(mapStateToProps, mapDipacthToProps)(Tab)
@@ -276,6 +274,7 @@ class SearchPage extends Component {
 }
 const mapSearchStateToProps = state => ({
   theme: state.theme.theme,
+ 
 })
 
 const mapSearchDipacthToProps = dispacth => ({
