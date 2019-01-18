@@ -11,7 +11,7 @@ export function handleData(actionType,dispatch, storeName, data, pageSize,favori
             fixItem = data.data.items  
         }       
     }
-    console.log(3,data)    
+    // console.log(3,data)    
     let showItems =  pageSize > fixItem.length ? fixItem : fixItem.slice(0, pageSize)
     _projectModules(showItems,favoriteDao, projectModels=>{
        
@@ -48,7 +48,9 @@ export async function _projectModules(showItems,favoriteDao,callback){
 }
 
 export  function doCallback(callback,object){  
+    
     if(callback && typeof callback === 'function'){
+        // alert(0)  
         callback(object)
     }
 }

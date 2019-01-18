@@ -5,6 +5,8 @@ export default{
     nav_bar_height_android:50,
     cm_btn:{
         textAlign:'center',
-        color:'#fff'
+        color:'#fff',
+        lineHeight:40 ,
+        borderRadius:4  
     }
 }

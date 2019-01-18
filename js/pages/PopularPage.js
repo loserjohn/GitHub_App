@@ -43,7 +43,7 @@ class Tab extends Component {
   }
   componentWillMount() {
     this._loadData()
-    EventBus.getInstance().addListener(Event.popular_favorite,(data)=>{
+    EventBus.getInstance().addListener(Event.popular_favorite,(data)=>{ 
       this.setState({switchFavorite:true})
     })
     EventBus.getInstance().addListener(Event.bottom_select,this.listener = (data)=>{

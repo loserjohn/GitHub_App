@@ -5,9 +5,10 @@ const initState = {
     items: [],
     storeName: '',
     pageIndex: 1,
-    isLoading: false,
+    isloading: false,
     canCancel: false,
-    hideLoadingMore: false
+    hideLoadingMore: false, 
+    showButton:false
 }
 // mock数据结构
 // {
@@ -26,23 +27,23 @@ const search = (state = initState, action) => {
                 ...state,
 
                 isloading: true,
-                canCancel: true
-
+                canCancel: true,
+                showButton:false    
 
             };
 
         case Types.SEARCH_FRESH_SUCCESS:
             //    下拉刷新成功
-            console.log(2, action)
+            // console.log(2, action)
             return {
                 ...state,
 
-                items: action.items,
+                items: action.items, 
                 isloading: false,
                 pageIndex: 1,
                 canCancel: false,
-                projectModels:action.projectModels    
-
+                projectModels:action.projectModels , 
+                showButton:true    
             };
 
         case Types.SEARCH_FRESH_ERROR:
@@ -51,25 +52,27 @@ const search = (state = initState, action) => {
                 ...state,
 
                 isloading: false,
-                canCancel: false
-
+                canCancel: false,
+                showButton:false
             };
         case Types.SEARCH_CANCEL:
             //    取消请求
             return {
                 canCancel: true,
-
+                isloading: false,
+                showButton:false
             };
 
 
         case Types.SEARCH_LOADMORE_SUCCESS:
             // 上拉加载更多成功
+            debugger
             return {
                 ...state,
                 items: action.items,
                 hideLoadingMore: false,
-                pageIndex: action.pageIndex
-
+                pageIndex: action.pageIndex,
+                projectModels:action.projectModels
 
             };
 
@@ -83,6 +86,10 @@ const search = (state = initState, action) => {
 
 
             };
+        
+        case Types.SEARCH_LOADMORE_INIT:
+            // 上拉加载失败
+            return initState;
         default:
             return state
     }

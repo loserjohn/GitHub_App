@@ -8,8 +8,8 @@ let CancelArray = []
 // 搜索开始
 export function onSearchData(keyWord,token,pageSize,favoriteDao,popularKeys,callback){
     
-    const url = URL + keyWord +  '&sort=stars';
-    debugger 
+    const url = URL + keyWord +  '&sort=stars'; 
+    // debugger 
     return (dispatch)=>{
         dispatch({type:Types.SEARCH_FRESH})  
     //    console.log(url)
@@ -77,10 +77,10 @@ export function onSearchCancel(token){
 
 // 加载更多
 
-export function onLoadMoreSearch(pageIndex,pageSize,dataArray = [],callback ,favoriteDao){
-//   console.log(storeName,pageIndex,pageSize)
-// alert(1)   
-    return (dispatch)=>{
+export function onLoadMoreSearch(storeName,pageIndex,pageSize,dataArray = [],callback ,favoriteDao){
+    alert(1) 
+    debugger
+    return (dispatch)=>{ 
 
         setTimeout(()=>{
         //    alert(1) 
@@ -119,3 +119,11 @@ export function onLoadMoreSearch(pageIndex,pageSize,dataArray = [],callback ,fav
        
     } 
 } 
+
+export function zero(){
+    return (dispatch)=>{
+        dispatch({
+            type:Types.SEARCH_LOADMORE_INIT
+        })
+    }
+}

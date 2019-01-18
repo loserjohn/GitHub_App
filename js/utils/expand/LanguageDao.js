@@ -13,8 +13,7 @@ export const LANGUAGE_FLAG = { languages: 'language', keys: 'keys' }
  * @class LanguageDao
  */
 export default class LanguageDao {
-    constructor(flag) {
-
+    constructor(flag) { 
         this.flag = flag
     }
 
@@ -24,14 +23,14 @@ export default class LanguageDao {
             // console.log('flag'+this.flag)
             AsyncStorage.getItem(this.flag, (error, result) => {
                 // console.log("!!",result)  
-                if (!error) {                
+                if (!error) {
                     if (!result) {
                         // debugger 
                         if (this.flag == LANGUAGE_FLAG.keys) {
                             this.save(keys)
-                            resolve(keys) 
-                        } else {                             
-                            this.save(langs) 
+                            resolve(keys)
+                        } else {
+                            this.save(langs)
                             resolve(langs)
                         }
                     } else {
@@ -39,9 +38,9 @@ export default class LanguageDao {
                         try {
                             resolve(JSON.parse(result))
                         } catch (error) {
-                            console.log(error)  
-                        } 
-                       
+                            console.log(error)
+                        }
+
                     }
                 } else {
                     reject()
@@ -56,4 +55,44 @@ export default class LanguageDao {
     save(data) {
         AsyncStorage.setItem(this.flag, JSON.stringify(data), (error, result) => { })
     }
+    // 添加新的关键词
+    addKey(keyword) {
+        return new Promise((resolve, reject) => {
+            AsyncStorage.getItem(this.flag, (error, result) => {
+                if (!error) {
+                    let res = JSON.parse(result);
+
+                    let hasin =  this.HasIn(res,keyword)   
+                    if(!hasin ){
+                        res.push({
+                            "path": keyword,
+                            "name": keyword,
+                            "checked": true
+                        })
+                        this.save(res); 
+                        resolve(res)
+                    }else{
+                        reject('已经保存过了') 
+                    }              
+                   
+                } else {
+                    reject()
+                    throw new Error()
+                }
+            })
+        })
+    }
+    HasIn(arr,value){
+
+        // keys.map((item,index)=>{
+        for(var i =0;i<arr.length;i++){
+          let item = arr[i];
+          if(item.name.toLowerCase() == value.toLowerCase()  ){ 
+            // 已经有过收入
+            return true  
+          }
+        }        
+        // })
+        return false
+      }
 }
